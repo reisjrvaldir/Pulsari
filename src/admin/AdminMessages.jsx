@@ -85,7 +85,7 @@ export default function AdminMessages() {
                   {!m.read && <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: '#FF2D8D', marginRight: 6, verticalAlign: 'middle' }} />}
                   {m.nome || 'Anônimo'}
                 </span>
-                <span style={{ fontFamily: "'Poppins',sans-serif", fontSize: '0.65rem', color: 'rgba(255,255,255,.3)', flexShrink: 0 }}>{fmt(m.createdAt)}</span>
+                <span style={{ fontFamily: "'Poppins',sans-serif", fontSize: '0.65rem', color: 'rgba(255,255,255,.3)', flexShrink: 0 }}>{fmt(m.created_at)}</span>
               </div>
               <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
                 <span style={{
@@ -130,7 +130,7 @@ export default function AdminMessages() {
                   {selected.nome || 'Sem nome'}
                 </h2>
                 <div style={{ fontFamily: "'Poppins',sans-serif", fontSize: '0.8rem', color: 'rgba(255,255,255,.5)' }}>
-                  {selected.email} · {fmt(selected.createdAt)}
+                  {selected.email} · {fmt(selected.created_at)}
                 </div>
               </div>
               <button onClick={() => handleDelete(selected.id)} style={{ background: 'rgba(239,68,68,.1)', border: '1px solid rgba(239,68,68,.25)', borderRadius: 6, padding: '0.4rem 0.9rem', color: '#f87171', fontFamily: "'Poppins',sans-serif", fontWeight: 600, fontSize: '0.75rem', cursor: 'pointer' }}>
