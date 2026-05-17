@@ -117,10 +117,11 @@ export default function Contact() {
   const [respostas, setRespostas] = useState(Array(10).fill(''))
   const [erroStep, setErroStep]   = useState(false)
   const [showModal, setShowModal] = useState(false)
+  const [sendError, setSendError] = useState('')
 
   const pct = Math.round((step / perguntas.length) * 100)
 
-  const handleNextStep = () => {
+  const handleNextStep = async () => {
     if (!respostas[step].trim()) { setErroStep(true); return }
     setErroStep(false)
     if (step < perguntas.length - 1) setStep(s => s + 1)
@@ -132,8 +133,13 @@ export default function Contact() {
         email: '',
         respostas: perguntas.map((p, i) => ({ pergunta: p, resposta: respostas[i] || '' })),
       }
-      sendMessage(payload).catch(() => {})
-      setShowModal(true)
+      try {
+        await sendMessage(payload)
+        setSendError('')
+        setShowModal(true)
+      } catch (err) {
+        setSendError(err.message || 'Erro ao enviar. Tente novamente.')
+      }
     }
   }
 
@@ -288,8 +294,13 @@ function FormContato({ form, setForm, sent, setSent, onBack }) {
         ) : (
           <form onSubmit={async e => {
               e.preventDefault()
-              await sendMessage({ tipo: 'contato', nome: form.nome, email: form.email, tipo_projeto: form.tipo, mensagem: form.msg }).catch(() => {})
-              setSent(true)
+              try {
+                await sendMessage({ tipo: 'contato', nome: form.nome, email: form.email, tipo_projeto: form.tipo, mensagem: form.msg })
+                setSendError('')
+                setSent(true)
+              } catch (err) {
+                setSendError(err.message || 'Erro ao enviar. Tente novamente.')
+              }
             }} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }} className="form-row">
               {[{ k: 'nome', l: 'Nome', t: 'text', p: 'Seu nome' }, { k: 'email', l: 'E-mail', t: 'email', p: 'seu@email.com' }].map(f => (
@@ -310,6 +321,11 @@ function FormContato({ form, setForm, sent, setSent, onBack }) {
               <label style={labelStyle}>Mensagem</label>
               <textarea rows={4} required placeholder="Conte sobre seu projeto, prazo e orçamento..." value={form.msg} onChange={e => setForm({ ...form, msg: e.target.value })} style={{ ...inputStyle, resize: 'vertical', fontFamily: 'var(--font2)' }} />
             </div>
+            {sendError && (
+              <div style={{ background: 'rgba(239,68,68,.1)', border: '1px solid rgba(239,68,68,.3)', borderRadius: 4, padding: '0.6rem 0.9rem', color: '#f87171', fontFamily: 'var(--font2)', fontSize: '0.82rem' }}>
+                ⚠ {sendError}
+              </div>
+            )}
             <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>Enviar Mensagem →</button>
           </form>
         )}

@@ -6,16 +6,26 @@ const headers = () => ({ 'Content-Type': 'application/json', 'x-admin-token': TO
 /* Envia formulário (sem auth — público) */
 export const sendMessage = async (data) => {
   const res = await fetch(`${API}/messages`, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   })
-  return res.json()
+  const body = await res.json().catch(() => ({}))
+  if (!res.ok) {
+    console.error('sendMessage failed:', res.status, body)
+    throw new Error(body.error || `Falha ao enviar (${res.status})`)
+  }
+  return body
 }
 
 /* Lista todas as mensagens */
 export const getMessages = async () => {
   const res = await fetch(`${API}/messages`, { headers: headers() })
-  if (!res.ok) throw new Error('Não autorizado')
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    console.error('getMessages failed:', res.status, body)
+    throw new Error(body.error || 'Não autorizado')
+  }
   return res.json()
 }
 
