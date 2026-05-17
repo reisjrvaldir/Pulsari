@@ -1,0 +1,36 @@
+const API   = import.meta.env.VITE_API_URL  || '/api'
+const TOKEN = import.meta.env.VITE_ADMIN_TOKEN || ''
+
+const headers = () => ({ 'Content-Type': 'application/json', 'x-admin-token': TOKEN })
+
+/* Envia formulário (sem auth — público) */
+export const sendMessage = async (data) => {
+  const res = await fetch(`${API}/messages`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+  return res.json()
+}
+
+/* Lista todas as mensagens */
+export const getMessages = async () => {
+  const res = await fetch(`${API}/messages`, { headers: headers() })
+  if (!res.ok) throw new Error('Não autorizado')
+  return res.json()
+}
+
+/* Contagem de não lidas */
+export const getUnreadCount = async () => {
+  const res = await fetch(`${API}/messages/unread-count`, { headers: headers() })
+  if (!res.ok) return 0
+  const { count } = await res.json()
+  return count
+}
+
+/* Marcar como lida */
+export const markRead = (id) =>
+  fetch(`${API}/messages/${id}`, { method: 'PATCH', headers: headers(), body: JSON.stringify({ read: true }) })
+
+/* Apagar */
+export const deleteMessage = (id) =>
+  fetch(`${API}/messages/${id}`, { method: 'DELETE', headers: headers() })
