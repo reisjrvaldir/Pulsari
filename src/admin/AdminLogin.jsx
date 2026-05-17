@@ -1,19 +1,37 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { login } from './auth'
+import { FiEye, FiEyeOff } from 'react-icons/fi'
+
+const API = import.meta.env.VITE_API_URL || '/api'
 
 export default function AdminLogin() {
   const nav = useNavigate()
-  const [email, setEmail] = useState('')
-  const [pass,  setPass]  = useState('')
-  const [erro,  setErro]  = useState('')
+  const [email,   setEmail]   = useState('')
+  const [pass,    setPass]    = useState('')
+  const [erro,    setErro]    = useState('')
   const [loading, setLoading] = useState(false)
+  const [showPass, setShowPass] = useState(false)
+  const [dbStatus, setDbStatus] = useState('checking') // 'checking' | 'ok' | 'error'
+
+  /* Verifica conexão com Supabase via API */
+  useEffect(() => {
+    fetch(`${API}/messages/unread-count`, {
+      headers: { 'x-admin-token': 'ping' }   // token errado retorna 401, mas conexão existe
+    })
+      .then(r => {
+        // 401 = servidor ok mas token errado → Supabase conectado
+        // qualquer resposta HTTP = API rodando
+        setDbStatus(r.status === 401 || r.ok ? 'ok' : 'error')
+      })
+      .catch(() => setDbStatus('error'))
+  }, [])
 
   const handleSubmit = async e => {
     e.preventDefault()
     setLoading(true)
     setErro('')
-    await new Promise(r => setTimeout(r, 600)) // simula latência
+    await new Promise(r => setTimeout(r, 600))
     if (login(email, pass)) {
       nav('/admin')
     } else {
@@ -21,6 +39,9 @@ export default function AdminLogin() {
     }
     setLoading(false)
   }
+
+  const statusColor = dbStatus === 'ok' ? '#22c55e' : dbStatus === 'error' ? '#ef4444' : '#f59e0b'
+  const statusLabel = dbStatus === 'ok' ? 'Supabase conectado' : dbStatus === 'error' ? 'Supabase offline' : 'Verificando...'
 
   return (
     <div style={{
@@ -49,18 +70,59 @@ export default function AdminLogin() {
           <p style={{ color: 'rgba(255,255,255,.45)', fontSize: '0.8rem', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
             Painel Administrativo
           </p>
+
+          {/* Status do banco */}
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+            marginTop: '0.8rem', padding: '0.3rem 0.8rem',
+            background: 'rgba(255,255,255,.05)', borderRadius: 20,
+            border: `1px solid ${statusColor}44`,
+          }}>
+            <span style={{
+              width: 7, height: 7, borderRadius: '50%',
+              background: statusColor,
+              boxShadow: `0 0 6px ${statusColor}`,
+              animation: dbStatus === 'checking' ? 'pulse 1.2s infinite' : 'none',
+              display: 'inline-block',
+            }} />
+            <span style={{ fontSize: '0.7rem', color: statusColor, fontFamily: "'Poppins',sans-serif", fontWeight: 500 }}>
+              {statusLabel}
+            </span>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div>
             <label style={labelSt}>E-mail</label>
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-              placeholder="seu@email.com" required style={inputSt} />
+            <input
+              type="email" value={email} onChange={e => setEmail(e.target.value)}
+              placeholder="seu@email.com" required style={inputSt}
+            />
           </div>
+
           <div>
             <label style={labelSt}>Senha</label>
-            <input type="password" value={pass} onChange={e => setPass(e.target.value)}
-              placeholder="••••••••" required style={inputSt} />
+            <div style={{ position: 'relative' }}>
+              <input
+                type={showPass ? 'text' : 'password'}
+                value={pass} onChange={e => setPass(e.target.value)}
+                placeholder="••••••••" required
+                style={{ ...inputSt, paddingRight: '2.8rem' }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPass(v => !v)}
+                style={{
+                  position: 'absolute', right: '0.75rem', top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  color: 'rgba(255,255,255,.4)', display: 'flex', alignItems: 'center',
+                  padding: 0, lineHeight: 1,
+                }}
+              >
+                {showPass ? <FiEyeOff size={17} /> : <FiEye size={17} />}
+              </button>
+            </div>
           </div>
 
           {erro && (
@@ -86,9 +148,16 @@ export default function AdminLogin() {
           Acesso restrito à equipe Pulsari
         </p>
       </div>
+
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.3; }
+        }
+      `}</style>
     </div>
   )
 }
 
 const labelSt = { display: 'block', fontFamily: "'Poppins',sans-serif", fontSize: '0.72rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.6)', marginBottom: '0.4rem' }
-const inputSt  = { width: '100%', background: 'rgba(255,255,255,.05)', border: '1px solid rgba(90,46,166,.3)', borderRadius: 6, padding: '0.7rem 0.9rem', color: '#fff', fontFamily: "'Poppins',sans-serif", fontSize: '0.92rem', outline: 'none' }
+const inputSt  = { width: '100%', boxSizing: 'border-box', background: 'rgba(255,255,255,.05)', border: '1px solid rgba(90,46,166,.3)', borderRadius: 6, padding: '0.7rem 0.9rem', color: '#fff', fontFamily: "'Poppins',sans-serif", fontSize: '0.92rem', outline: 'none' }
