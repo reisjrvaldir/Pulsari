@@ -14,6 +14,12 @@ export default function AdminLogin() {
   const [showPass, setShowPass] = useState(false)
   const [dbStatus, setDbStatus] = useState('checking') // 'checking' | 'ok' | 'error'
 
+  /* Restaura o cursor normal (globals.css esconde no site) */
+  useEffect(() => {
+    document.body.style.cursor = 'auto'
+    return () => { document.body.style.cursor = '' }
+  }, [])
+
   /* Verifica conexão com Supabase via API */
   useEffect(() => {
     fetch(`${API}/messages/unread-count`, {

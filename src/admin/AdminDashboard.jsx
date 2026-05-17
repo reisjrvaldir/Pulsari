@@ -9,6 +9,13 @@ const EMPTY_FORM = { nome: '', desc: '', context: '', tags: '', link: '', imagem
 
 export default function AdminDashboard() {
   const nav = useNavigate()
+
+  /* Restaura o cursor normal (globals.css esconde no site) */
+  useEffect(() => {
+    document.body.style.cursor = 'auto'
+    return () => { document.body.style.cursor = '' }
+  }, [])
+
   const [tab,       setTab]       = useState('portfolio')  /* 'portfolio' | 'mensagens' */
   const [unread,    setUnread]    = useState(0)
   const [data,      setData]      = useState(getPortfolio())
