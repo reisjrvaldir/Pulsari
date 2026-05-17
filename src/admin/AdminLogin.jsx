@@ -31,8 +31,8 @@ export default function AdminLogin() {
     e.preventDefault()
     setLoading(true)
     setErro('')
-    await new Promise(r => setTimeout(r, 600))
-    if (login(email, pass)) {
+    const ok = await login(email, pass)
+    if (ok) {
       nav('/admin')
     } else {
       setErro('E-mail ou senha incorretos.')
