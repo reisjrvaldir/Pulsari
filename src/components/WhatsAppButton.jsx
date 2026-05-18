@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const PHONE   = '5581999990000'          // ← troque pelo número real (só dígitos, com DDI)
+const PHONE   = '5581989654487'
 const MESSAGE = 'Olá! Vim pelo site da Pulsari e gostaria de saber mais.'
 
 export default function WhatsAppButton() {
