@@ -190,6 +190,7 @@ export default function Contact() {
             <FormContato
               form={form} setForm={setForm}
               sent={sentContact} setSent={setSentContact}
+              sendError={sendError} setSendError={setSendError}
               onBack={backToCards}
             />
           ) : (
@@ -197,6 +198,7 @@ export default function Contact() {
               step={step} setStep={setStep}
               respostas={respostas} setRespostas={setRespostas}
               erroStep={erroStep} setErroStep={setErroStep}
+              sendError={sendError}
               pct={pct} onNext={handleNextStep} onBack={backToCards}
             />
           )}
@@ -274,7 +276,7 @@ function CardBtn({ icon, title, desc, cta, onClick, className }) {
 }
 
 /* ── Form Contato ── */
-function FormContato({ form, setForm, sent, setSent, onBack }) {
+function FormContato({ form, setForm, sent, setSent, sendError, setSendError, onBack }) {
   return (
     <div style={{ animation: 'slideUp .4s ease' }}>
       <button onClick={onBack} style={{ background: 'none', border: 'none', color: 'rgba(237,233,255,0.72)', fontFamily: 'var(--font2)', fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'none', marginBottom: '1.5rem', padding: 0, transition: 'color .3s' }}
@@ -335,7 +337,7 @@ function FormContato({ form, setForm, sent, setSent, onBack }) {
 }
 
 /* ── Form Orçamento em etapas ── */
-function FormOrcamento({ step, setStep, respostas, setRespostas, erroStep, setErroStep, pct, onNext, onBack }) {
+function FormOrcamento({ step, setStep, respostas, setRespostas, erroStep, setErroStep, sendError, pct, onNext, onBack }) {
   return (
     <div style={{ animation: 'slideUp .4s ease' }}>
       <button onClick={onBack} style={{ background: 'none', border: 'none', color: 'rgba(237,233,255,0.72)', fontFamily: 'var(--font2)', fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'none', marginBottom: '1.5rem', padding: 0, transition: 'color .3s' }}
@@ -376,6 +378,11 @@ function FormOrcamento({ step, setStep, respostas, setRespostas, erroStep, setEr
           autoFocus
         />
         {erroStep && <p style={{ fontFamily: 'var(--font2)', fontSize: '0.75rem', color: '#ef4444', marginTop: '0.35rem' }}>Esta pergunta é obrigatória.</p>}
+        {sendError && (
+          <div style={{ marginTop: '0.8rem', background: 'rgba(239,68,68,.1)', border: '1px solid rgba(239,68,68,.3)', borderRadius: 4, padding: '0.6rem 0.9rem', color: '#f87171', fontFamily: 'var(--font2)', fontSize: '0.78rem' }}>
+            ⚠ {sendError}
+          </div>
+        )}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.2rem' }}>
           {step > 0
             ? <button onClick={() => { setStep(s => s - 1); setErroStep(false) }} className="btn" style={{ fontSize: '0.75rem' }}>← Anterior</button>
