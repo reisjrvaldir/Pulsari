@@ -51,7 +51,7 @@ export default function Navbar() {
         {/* Logo — coluna 1 */}
         <div onClick={() => scrollTo('#hero')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
           <img src={logoPulsari} alt="Agência Pulsari"
-            style={{ height: 40, width: 'auto', objectFit: 'contain' }}
+            style={{ height: 56, width: 'auto', objectFit: 'contain' }}
           />
         </div>
 
