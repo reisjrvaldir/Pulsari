@@ -82,7 +82,7 @@ export default function Footer() {
             </div>
             <div>
               <h4 style={colHead}>Contato</h4>
-              {['oi@pulsari.com.br', '+55 (81) 99999-0000', 'Recife, PE — Brasil'].map(v => (
+              {['oi@pulsari.com.br', '+55 (81) 98965-4487', 'Recife, PE — Brasil'].map(v => (
                 <div key={v} style={footLink}>{v}</div>
               ))}
             </div>
@@ -95,7 +95,7 @@ export default function Footer() {
           display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem',
         }}>
           <span style={{ fontFamily: 'var(--font2)', fontSize: '0.78rem', color: 'var(--w)' }}>
-            © 2025 Pulsari. Todos os direitos reservados.
+            © 2026 Pulsari. Todos os direitos reservados.
           </span>
           <span style={{ fontFamily: 'var(--font2)', fontSize: '0.78rem', color: 'var(--w)' }}>
             Feito com 💜 em Recife
