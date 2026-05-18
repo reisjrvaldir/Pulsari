@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import logoPulsari from '../assets/logo-pulsari.png.PNG'
 
 const navLinks = ['Início', 'Sobre', 'Portfólio', 'Contato']
 const services = ['Sites Institucionais', 'E-commerce', 'Sistemas Web', 'Landing Pages', 'UI/UX Design']
@@ -33,7 +32,13 @@ export default function Footer() {
           {/* Coluna 1 */}
           <div>
             <div style={{ marginBottom: '0.75rem' }}>
-              <img src={logoPulsari} alt="Agência Pulsari" style={{ height: 140, width: 'auto', objectFit: 'contain', maxWidth: 260, marginLeft: -24 }} />
+              <span style={{
+                fontFamily: 'var(--font)',
+                fontWeight: 900,
+                fontSize: '1.8rem',
+                letterSpacing: '0.18em',
+                color: '#fff',
+              }}>PULSARI</span>
             </div>
 
             <p style={{ fontFamily: 'var(--font2)', fontSize: '0.9rem', color: 'var(--w)', lineHeight: 1.7, marginBottom: '1.5rem', maxWidth: 260 }}>

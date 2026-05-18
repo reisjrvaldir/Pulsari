@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import logoPulsari from '../assets/logo-pulsari.png.PNG'
 
 const links = [
   { label: 'Início',     href: '#hero' },
@@ -50,9 +49,13 @@ export default function Navbar() {
 
         {/* Logo — coluna 1 */}
         <div onClick={() => scrollTo('#hero')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-          <img src={logoPulsari} alt="Agência Pulsari"
-            style={{ height: 140, width: 'auto', objectFit: 'contain', maxWidth: 240, marginLeft: -24 }}
-          />
+          <span style={{
+            fontFamily: 'var(--font)',
+            fontWeight: 900,
+            fontSize: '1.6rem',
+            letterSpacing: '0.18em',
+            color: '#fff',
+          }}>PULSARI</span>
         </div>
 
         {/* Links centralizados — coluna 2 */}
@@ -102,7 +105,7 @@ export default function Navbar() {
           display: 'flex', flexDirection: 'column',
           alignItems: 'center', justifyContent: 'center', gap: '2.5rem', zIndex: 99,
         }}>
-          <img src={logoPulsari} alt="Pulsari" style={{ height: 48, marginBottom: '1rem' }} />
+          <span style={{ fontFamily: 'var(--font)', fontWeight: 900, fontSize: '2rem', letterSpacing: '0.2em', color: '#fff', marginBottom: '1rem' }}>PULSARI</span>
           {links.map(l => (
             <button key={l.label} onClick={() => scrollTo(l.href)} style={{
               background: 'none', border: 'none', color: 'var(--w)',
