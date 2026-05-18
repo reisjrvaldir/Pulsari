@@ -170,8 +170,18 @@ export default function Contact() {
   const isCards = view === 'cards'
 
   return (
-    <section id="contato" style={{ padding: '4rem 5%', position: 'relative' }}>
-      <div style={{ position: 'absolute', inset: 0, background: 'rgba(3,2,12,.70)', zIndex: 1, pointerEvents: 'none' }} />
+    <section id="contato" style={{ padding: '8rem 5%', position: 'relative', overflow: 'hidden' }}>
+      {/* Fundo escuro */}
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(3,2,12,.80)', zIndex: 1, pointerEvents: 'none' }} />
+
+      {/* Destaque: borda superior gradiente */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: 'linear-gradient(90deg, #5A2EA6, #FF2D8D, #2D6BFF)', zIndex: 3, pointerEvents: 'none' }} />
+
+      {/* Brilho roxo no canto superior esquerdo */}
+      <div style={{ position: 'absolute', top: '-20%', left: '-10%', width: '50%', height: '70%', background: 'radial-gradient(ellipse, rgba(90,46,166,.18) 0%, transparent 70%)', zIndex: 1, pointerEvents: 'none' }} />
+
+      {/* Brilho rosa no canto inferior direito */}
+      <div style={{ position: 'absolute', bottom: '-20%', right: '-5%', width: '45%', height: '70%', background: 'radial-gradient(ellipse, rgba(255,45,141,.10) 0%, transparent 70%)', zIndex: 1, pointerEvents: 'none' }} />
 
       <div style={{ position: 'relative', zIndex: 2, maxWidth: 1200, margin: '0 auto' }}>
 
