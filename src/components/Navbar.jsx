@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import logoPulsari from '../assets/logo-pulsari.png.PNG'
 
 const links = [
   { label: 'Início',     href: '#hero' },
@@ -49,15 +50,9 @@ export default function Navbar() {
 
         {/* Logo — coluna 1 */}
         <div onClick={() => scrollTo('#hero')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-          <img src="/logo-horizontal.png" alt="Agência Pulsari"
-            style={{ height: 36, width: 'auto', objectFit: 'contain' }}
-            onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block' }}
+          <img src={logoPulsari} alt="Agência Pulsari"
+            style={{ height: 40, width: 'auto', objectFit: 'contain' }}
           />
-          <span style={{
-            display: 'none', fontFamily: 'var(--font)', fontWeight: 900, fontSize: '1.3rem',
-            letterSpacing: '0.1em', background: 'var(--grad)',
-            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-          }}>PULSARI</span>
         </div>
 
         {/* Links centralizados — coluna 2 */}
@@ -107,8 +102,7 @@ export default function Navbar() {
           display: 'flex', flexDirection: 'column',
           alignItems: 'center', justifyContent: 'center', gap: '2.5rem', zIndex: 99,
         }}>
-          <img src="/logo-horizontal.png" alt="Pulsari" style={{ height: 44, marginBottom: '1rem' }}
-            onError={e => e.target.style.display = 'none'} />
+          <img src={logoPulsari} alt="Pulsari" style={{ height: 48, marginBottom: '1rem' }} />
           {links.map(l => (
             <button key={l.label} onClick={() => scrollTo(l.href)} style={{
               background: 'none', border: 'none', color: 'var(--w)',
