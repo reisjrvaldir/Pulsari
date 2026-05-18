@@ -42,7 +42,7 @@ export default function Navbar() {
       transition: 'all 0.4s ease',
     }}>
       <div style={{
-        maxWidth: 1200, margin: '0 auto', height: 72,
+        maxWidth: 1200, margin: '0 auto', height: 96,
         display: 'grid',
         gridTemplateColumns: 'auto 1fr auto',
         alignItems: 'center', gap: '1.5rem',
@@ -51,7 +51,7 @@ export default function Navbar() {
         {/* Logo — coluna 1 */}
         <div onClick={() => scrollTo('#hero')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
           <img src={logoPulsari} alt="Agência Pulsari"
-            style={{ height: 52, width: 'auto', objectFit: 'contain', maxWidth: 160 }}
+            style={{ height: 140, width: 'auto', objectFit: 'contain', maxWidth: 240, marginLeft: -24 }}
           />
         </div>
 

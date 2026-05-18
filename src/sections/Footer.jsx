@@ -33,7 +33,7 @@ export default function Footer() {
           {/* Coluna 1 */}
           <div>
             <div style={{ marginBottom: '0.75rem' }}>
-              <img src={logoPulsari} alt="Agência Pulsari" style={{ height: 48, width: 'auto', objectFit: 'contain' }} />
+              <img src={logoPulsari} alt="Agência Pulsari" style={{ height: 140, width: 'auto', objectFit: 'contain', maxWidth: 260, marginLeft: -24 }} />
             </div>
 
             <p style={{ fontFamily: 'var(--font2)', fontSize: '0.9rem', color: 'var(--w)', lineHeight: 1.7, marginBottom: '1.5rem', maxWidth: 260 }}>
