@@ -1,7 +1,8 @@
-const API   = import.meta.env.VITE_API_URL  || '/api'
-const TOKEN = import.meta.env.VITE_ADMIN_TOKEN || ''
+import { getToken } from './auth'
 
-const headers = () => ({ 'Content-Type': 'application/json', 'x-admin-token': TOKEN })
+const API = import.meta.env.VITE_API_URL || '/api'
+
+const headers = () => ({ 'Content-Type': 'application/json', 'x-admin-token': getToken() })
 
 /* Envia formulário (sem auth — público) */
 export const sendMessage = async (data) => {

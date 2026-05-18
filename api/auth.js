@@ -9,13 +9,15 @@ export default async function handler(req, res) {
 
   const okEmail = process.env.ADMIN_EMAIL
   const okPass  = process.env.ADMIN_PASS
+  const token   = process.env.ADMIN_TOKEN
 
-  if (!okEmail || !okPass) {
+  if (!okEmail || !okPass || !token) {
     return res.status(500).json({ error: 'Credenciais não configuradas no servidor.' })
   }
 
   if (email?.trim() === okEmail && pass === okPass) {
-    return res.json({ ok: true })
+    /* Login OK → devolve o token de acesso para o frontend usar nas demais rotas */
+    return res.json({ ok: true, token })
   }
 
   return res.status(401).json({ ok: false, error: 'E-mail ou senha incorretos.' })

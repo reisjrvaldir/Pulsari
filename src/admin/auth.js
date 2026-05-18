@@ -1,4 +1,5 @@
 const SESSION_KEY = 'pulsari_admin_session'
+const TOKEN_KEY   = 'pulsari_admin_token'
 const API = import.meta.env.VITE_API_URL || '/api'
 
 /* Login via servidor — credenciais nunca ficam no frontend */
@@ -10,8 +11,9 @@ export const login = async (email, pass) => {
       body: JSON.stringify({ email, pass }),
     })
     const data = await res.json()
-    if (res.ok && data.ok) {
+    if (res.ok && data.ok && data.token) {
       sessionStorage.setItem(SESSION_KEY, JSON.stringify({ email, ts: Date.now() }))
+      sessionStorage.setItem(TOKEN_KEY, data.token)
       return true
     }
     return false
@@ -20,7 +22,12 @@ export const login = async (email, pass) => {
   }
 }
 
-export const logout = () => sessionStorage.removeItem(SESSION_KEY)
+export const logout = () => {
+  sessionStorage.removeItem(SESSION_KEY)
+  sessionStorage.removeItem(TOKEN_KEY)
+}
+
+export const getToken = () => sessionStorage.getItem(TOKEN_KEY) || ''
 
 export const isAuthenticated = () => {
   const raw = sessionStorage.getItem(SESSION_KEY)
