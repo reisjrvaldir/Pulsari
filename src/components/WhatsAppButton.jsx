@@ -3,6 +3,8 @@ import { useState } from 'react'
 const PHONE   = '5581989654487'
 const MESSAGE = 'Olá! Vim pelo site da Pulsari e gostaria de saber mais.'
 
+
+
 export default function WhatsAppButton() {
   const [hovered, setHovered] = useState(false)
 
@@ -54,12 +56,12 @@ export default function WhatsAppButton() {
           fontWeight: 700,
           fontSize: '0.85rem',
           letterSpacing: '0.04em',
-          maxWidth: hovered ? 160 : 0,
+          maxWidth: hovered ? 260 : 0,
           opacity: hovered ? 1 : 0,
           transition: 'max-width .35s cubic-bezier(0.22,1,0.36,1), opacity .25s ease',
           overflow: 'hidden',
         }}>
-          Falar no WhatsApp
+          Fale com o Pulse, a IA da PULSARI!
         </span>
       </a>
 
