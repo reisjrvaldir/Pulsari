@@ -33,9 +33,8 @@ export default function AdminMessages() {
   }
 
   const filtered = msgs.filter(m => {
-    if (filter === 'unread')   return !m.read
-    if (filter === 'contato')  return m.tipo === 'contato'
-    if (filter === 'orcamento') return m.tipo === 'orcamento'
+    if (filter === 'unread') return !m.read
+    if (filter === 'read')   return m.read
     return true
   })
 
@@ -50,10 +49,9 @@ export default function AdminMessages() {
         {/* Filtros */}
         <div style={{ padding: '1rem', borderBottom: '1px solid rgba(90,46,166,.15)', display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
           {[
-            { key: 'all',       label: `Todos (${msgs.length})` },
-            { key: 'unread',    label: `Não lidos (${unread})` },
-            { key: 'contato',   label: 'Contato' },
-            { key: 'orcamento', label: 'Briefing' },
+            { key: 'all',    label: `Todos (${msgs.length})` },
+            { key: 'unread', label: `Não lidas (${unread})` },
+            { key: 'read',   label: `Lidas (${msgs.length - unread})` },
           ].map(f => (
             <button key={f.key} onClick={() => setFilter(f.key)} style={{
               padding: '0.3rem 0.7rem', borderRadius: 4, border: 'none', cursor: 'pointer',

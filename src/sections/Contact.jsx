@@ -112,25 +112,34 @@ function InfoCol() {
 export default function Contact() {
   const [view, setView]           = useState('cards') /* 'cards' | 'contato' | 'orcamento' */
   const [sentContact, setSentContact] = useState(false)
-  const [form, setForm]           = useState({ nome: '', email: '', tipo: '', msg: '' })
-  const [step, setStep]           = useState(0)
+  const [form, setForm]           = useState({ nome: '', telefone: '', email: '', tipo: '', msg: '' })
+  const [step, setStep]           = useState(-1)  /* -1 = aba de identificação */
+  const [infoOrc, setInfoOrc]     = useState({ nome: '', telefone: '', email: '' })
+  const [infoErro, setInfoErro]   = useState(false)
   const [respostas, setRespostas] = useState(Array(10).fill(''))
   const [erroStep, setErroStep]   = useState(false)
   const [showModal, setShowModal] = useState(false)
   const [sendError, setSendError] = useState('')
 
-  const pct = Math.round((step / perguntas.length) * 100)
+  const pct = step < 0 ? 0 : Math.round(((step + 1) / perguntas.length) * 100)
 
   const handleNextStep = async () => {
+    /* Aba de identificação */
+    if (step === -1) {
+      if (!infoOrc.nome.trim() || !infoOrc.telefone.trim() || !infoOrc.email.trim()) { setInfoErro(true); return }
+      setInfoErro(false)
+      setStep(0)
+      return
+    }
     if (!respostas[step].trim()) { setErroStep(true); return }
     setErroStep(false)
     if (step < perguntas.length - 1) setStep(s => s + 1)
     else {
-      /* Envia briefing para a API */
       const payload = {
         tipo: 'orcamento',
-        nome: respostas[0] || 'Visitante',
-        email: '',
+        nome: infoOrc.nome,
+        telefone: infoOrc.telefone,
+        email: infoOrc.email,
         respostas: perguntas.map((p, i) => ({ pergunta: p, resposta: respostas[i] || '' })),
       }
       try {
@@ -145,14 +154,16 @@ export default function Contact() {
 
   const handleModalOk = () => {
     setShowModal(false)
-    setStep(0); setRespostas(Array(10).fill('')); setErroStep(false)
+    setStep(-1); setRespostas(Array(10).fill('')); setErroStep(false)
+    setInfoOrc({ nome: '', telefone: '', email: '' })
     setView('cards')
   }
 
   const backToCards = () => {
     setView('cards'); setSentContact(false)
-    setForm({ nome: '', email: '', tipo: '', msg: '' })
-    setStep(0); setRespostas(Array(10).fill('')); setErroStep(false)
+    setForm({ nome: '', telefone: '', email: '', tipo: '', msg: '' })
+    setStep(-1); setRespostas(Array(10).fill('')); setErroStep(false)
+    setInfoOrc({ nome: '', telefone: '', email: '' })
   }
 
   /* ── Layout base: 3 colunas ou 2 colunas ao abrir form ── */
@@ -196,6 +207,7 @@ export default function Contact() {
           ) : (
             <FormOrcamento
               step={step} setStep={setStep}
+              infoOrc={infoOrc} setInfoOrc={setInfoOrc} infoErro={infoErro}
               respostas={respostas} setRespostas={setRespostas}
               erroStep={erroStep} setErroStep={setErroStep}
               sendError={sendError}
@@ -297,7 +309,7 @@ function FormContato({ form, setForm, sent, setSent, sendError, setSendError, on
           <form onSubmit={async e => {
               e.preventDefault()
               try {
-                await sendMessage({ tipo: 'contato', nome: form.nome, email: form.email, tipo_projeto: form.tipo, mensagem: form.msg })
+                await sendMessage({ tipo: 'contato', nome: form.nome, telefone: form.telefone, email: form.email, tipo_projeto: form.tipo, mensagem: form.msg })
                 setSendError('')
                 setSent(true)
               } catch (err) {
@@ -305,22 +317,28 @@ function FormContato({ form, setForm, sent, setSent, sendError, setSendError, on
               }
             }} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }} className="form-row">
-              {[{ k: 'nome', l: 'Nome', t: 'text', p: 'Seu nome' }, { k: 'email', l: 'E-mail', t: 'email', p: 'seu@email.com' }].map(f => (
-                <div key={f.k}>
-                  <label style={labelStyle}>{f.l}</label>
-                  <input type={f.t} placeholder={f.p} required value={form[f.k]} onChange={e => setForm({ ...form, [f.k]: e.target.value })} style={inputStyle} />
-                </div>
-              ))}
+              <div>
+                <label style={labelStyle}>Nome *</label>
+                <input type="text" placeholder="Seu nome completo" required value={form.nome} onChange={e => setForm({ ...form, nome: e.target.value })} style={inputStyle} />
+              </div>
+              <div>
+                <label style={labelStyle}>Telefone / WhatsApp *</label>
+                <input type="tel" placeholder="(00) 00000-0000" required value={form.telefone} onChange={e => setForm({ ...form, telefone: e.target.value })} style={inputStyle} />
+              </div>
+            </div>
+            <div>
+              <label style={labelStyle}>E-mail *</label>
+              <input type="email" placeholder="seu@email.com" required value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} style={inputStyle} />
             </div>
             <div>
               <label style={labelStyle}>Tipo de Projeto</label>
-              <select required value={form.tipo} onChange={e => setForm({ ...form, tipo: e.target.value })} style={{ ...inputStyle, color: form.tipo ? 'var(--w)' : 'rgba(237,233,255,0.4)' }}>
+              <select value={form.tipo} onChange={e => setForm({ ...form, tipo: e.target.value })} style={{ ...inputStyle, color: form.tipo ? 'var(--w)' : 'rgba(237,233,255,0.4)' }}>
                 <option value="" style={{ background: 'var(--bg)' }}>Selecione...</option>
                 {tipoOptions.map(o => <option key={o} value={o} style={{ background: 'var(--bg)' }}>{o}</option>)}
               </select>
             </div>
             <div>
-              <label style={labelStyle}>Mensagem</label>
+              <label style={labelStyle}>Mensagem *</label>
               <textarea rows={4} required placeholder="Conte sobre seu projeto, prazo e orçamento..." value={form.msg} onChange={e => setForm({ ...form, msg: e.target.value })} style={{ ...inputStyle, resize: 'vertical', fontFamily: 'var(--font2)' }} />
             </div>
             {sendError && (
@@ -337,7 +355,7 @@ function FormContato({ form, setForm, sent, setSent, sendError, setSendError, on
 }
 
 /* ── Form Orçamento em etapas ── */
-function FormOrcamento({ step, setStep, respostas, setRespostas, erroStep, setErroStep, sendError, pct, onNext, onBack }) {
+function FormOrcamento({ step, setStep, infoOrc, setInfoOrc, infoErro, respostas, setRespostas, erroStep, setErroStep, sendError, pct, onNext, onBack }) {
   return (
     <div style={{ animation: 'slideUp .4s ease' }}>
       <button onClick={onBack} style={{ background: 'none', border: 'none', color: 'rgba(237,233,255,0.72)', fontFamily: 'var(--font2)', fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'none', marginBottom: '1.5rem', padding: 0, transition: 'color .3s' }}
@@ -345,11 +363,35 @@ function FormOrcamento({ step, setStep, respostas, setRespostas, erroStep, setEr
         ← Voltar
       </button>
 
+      {/* Aba de identificação (step === -1) */}
+      {step === -1 ? (
+        <div style={{ background: 'rgba(124,58,237,.04)', border: '1px solid var(--border)', borderRadius: 6, padding: '2rem', position: 'relative' }}>
+          <span style={{ position: 'absolute', top: -11, left: 20, background: 'var(--bg)', padding: '0 0.5rem', fontFamily: 'var(--font2)', fontSize: '0.68rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--p3)' }}>BRIEFING.IDENTIFICAÇÃO</span>
+          <p style={{ fontFamily: 'var(--font2)', fontSize: '1rem', fontWeight: 600, color: 'var(--w)', marginBottom: '1.5rem' }}>Antes de começar, nos conte quem é você:</p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div>
+              <label style={labelStyle}>Nome completo *</label>
+              <input type="text" placeholder="Seu nome" required value={infoOrc.nome} onChange={e => setInfoOrc({ ...infoOrc, nome: e.target.value })} style={{ ...inputStyle, borderColor: infoErro && !infoOrc.nome.trim() ? '#ef4444' : 'var(--border)' }} />
+            </div>
+            <div>
+              <label style={labelStyle}>Telefone / WhatsApp *</label>
+              <input type="tel" placeholder="(00) 00000-0000" required value={infoOrc.telefone} onChange={e => setInfoOrc({ ...infoOrc, telefone: e.target.value })} style={{ ...inputStyle, borderColor: infoErro && !infoOrc.telefone.trim() ? '#ef4444' : 'var(--border)' }} />
+            </div>
+            <div>
+              <label style={labelStyle}>E-mail *</label>
+              <input type="email" placeholder="seu@email.com" required value={infoOrc.email} onChange={e => setInfoOrc({ ...infoOrc, email: e.target.value })} style={{ ...inputStyle, borderColor: infoErro && !infoOrc.email.trim() ? '#ef4444' : 'var(--border)' }} />
+            </div>
+            {infoErro && <p style={{ fontFamily: 'var(--font2)', fontSize: '0.75rem', color: '#ef4444' }}>Preencha todos os campos obrigatórios.</p>}
+            <button onClick={onNext} className="btn btn-primary" style={{ fontSize: '0.85rem', marginTop: '0.5rem' }}>Começar Briefing →</button>
+          </div>
+        </div>
+      ) : (
+      <>
       {/* Progresso */}
       <div style={{ marginBottom: '1.8rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
           <span style={{ fontFamily: 'var(--font2)', fontSize: '0.75rem', color: 'var(--w)', letterSpacing: '0.06em' }}>
-            <strong style={{ color: 'var(--p3)' }}>{step}</strong>/10 respondidas
+            <strong style={{ color: 'var(--p3)' }}>{step + 1}</strong>/10 respondidas
           </span>
           <span style={{ fontFamily: 'var(--font)', fontSize: '0.75rem', fontWeight: 700, color: 'var(--p3)' }}>{pct}%</span>
         </div>
@@ -386,12 +428,14 @@ function FormOrcamento({ step, setStep, respostas, setRespostas, erroStep, setEr
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.2rem' }}>
           {step > 0
             ? <button onClick={() => { setStep(s => s - 1); setErroStep(false) }} className="btn" style={{ fontSize: '0.75rem' }}>← Anterior</button>
-            : <span />}
+            : <button onClick={() => setStep(-1)} className="btn" style={{ fontSize: '0.75rem' }}>← Identificação</button>}
           <button onClick={onNext} className="btn btn-primary" style={{ fontSize: '0.75rem' }}>
             {step < 9 ? 'Próxima →' : 'Enviar Briefing ✓'}
           </button>
         </div>
       </div>
+      </>
+      )}
     </div>
   )
 }

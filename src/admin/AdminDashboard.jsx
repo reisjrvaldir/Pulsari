@@ -18,6 +18,7 @@ export default function AdminDashboard() {
 
   const [tab,       setTab]       = useState('portfolio')  /* 'portfolio' | 'mensagens' */
   const [unread,    setUnread]    = useState(0)
+  const [darkMode,  setDarkMode]  = useState(true)
   const [data,      setData]      = useState(getPortfolio())
   const [activeCat, setActiveCat] = useState('sites')
   const [modal,     setModal]     = useState(null)   /* null | 'add' | { cat, id } */
@@ -62,14 +63,19 @@ export default function AdminDashboard() {
 
   const projects = data[activeCat] || []
 
+  const bg      = darkMode ? '#0A0812' : '#f4f3f8'
+  const fg      = darkMode ? '#fff'    : '#1a0a2e'
+  const cardBg  = darkMode ? 'rgba(30,11,46,.9)' : '#fff'
+  const border  = darkMode ? 'rgba(90,46,166,.3)' : 'rgba(90,46,166,.2)'
+
   return (
-    <div style={{ minHeight: '100vh', background: '#0A0812', fontFamily: "'Montserrat',sans-serif", color: '#fff' }}>
+    <div style={{ minHeight: '100vh', background: bg, fontFamily: "'Montserrat',sans-serif", color: fg, transition: 'background .3s, color .3s' }}>
       <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
 
       {/* ── Topbar ── */}
       <div style={{
-        background: 'rgba(30,11,46,.9)', backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(90,46,166,.3)',
+        background: cardBg, backdropFilter: 'blur(20px)',
+        borderBottom: `1px solid ${border}`,
         padding: '0 2rem', height: 64,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         position: 'sticky', top: 0, zIndex: 50,
@@ -99,6 +105,15 @@ export default function AdminDashboard() {
           ))}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          {/* 🌙 Dark/Light mode */}
+          <button onClick={() => setDarkMode(v => !v)} title={darkMode ? 'Modo claro' : 'Modo escuro'} style={{
+            background: darkMode ? 'rgba(255,255,255,.08)' : 'rgba(90,46,166,.1)',
+            border: `1px solid ${border}`, borderRadius: 6,
+            padding: '0.4rem 0.7rem', cursor: 'pointer', fontSize: '1rem',
+            transition: 'all .2s', display: 'flex', alignItems: 'center',
+          }}>
+            {darkMode ? '☀️' : '🌙'}
+          </button>
           {/* ← Voltar ao site */}
           <a href="/" style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
