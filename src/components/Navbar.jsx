@@ -36,7 +36,7 @@ export default function Navbar() {
     <>
       {/* ── Barra de navegação ── */}
       <nav style={{
-        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 200,
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
         padding: '0 5%',
         background: solid ? 'rgba(10,8,18,.92)' : 'transparent',
         backdropFilter: solid ? 'blur(20px)' : 'none',
@@ -91,7 +91,7 @@ export default function Navbar() {
             style={{
               display: 'none', background: 'none', border: 'none',
               flexDirection: 'column', justifyContent: 'center',
-              gap: 5, cursor: 'pointer', padding: '4px', zIndex: 201,
+              gap: 5, cursor: 'pointer', padding: '4px', zIndex: 310, position: 'relative',
             }}
           >
             {[0, 1, 2].map(i => (
@@ -111,15 +111,14 @@ export default function Navbar() {
 
       {/* ── Menu mobile — overlay separado com z-index maior ── */}
       <div style={{
-        position: 'fixed', inset: 0, zIndex: 199,
-        background: 'rgba(8,4,20,.98)',
-        backdropFilter: 'blur(12px)',
+        position: 'fixed', inset: 0, zIndex: 300,
+        background: '#08041a',
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center',
         gap: 0,
         opacity: open ? 1 : 0,
         pointerEvents: open ? 'auto' : 'none',
-        transition: 'opacity .3s ease',
+        transition: 'opacity .25s ease',
       }}>
 
         {/* Linha gradiente no topo */}
@@ -141,10 +140,10 @@ export default function Navbar() {
             <button key={l.label} onClick={() => scrollTo(l.href)} style={{
               background: 'none', border: 'none',
               color: '#fff', width: '100%',
-              fontFamily: 'var(--font)', fontSize: 'clamp(1.4rem, 6vw, 2rem)',
-              fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase',
-              cursor: 'pointer', padding: '0.9rem 2rem', textAlign: 'center',
-              borderBottom: i < links.length - 1 ? '1px solid rgba(90,46,166,.15)' : 'none',
+              fontFamily: 'var(--font2)', fontSize: '0.95rem',
+              fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase',
+              cursor: 'pointer', padding: '1rem 2rem', textAlign: 'center',
+              borderBottom: i < links.length - 1 ? '1px solid rgba(90,46,166,.2)' : 'none',
               transition: 'color .2s, background .2s',
             }}
               onMouseEnter={e => { e.currentTarget.style.color = 'var(--p3)'; e.currentTarget.style.background = 'rgba(90,46,166,.08)' }}
