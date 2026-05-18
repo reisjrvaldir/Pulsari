@@ -3,7 +3,15 @@ import { getMessages, markRead, deleteMessage } from './messagesService'
 
 const fmt = iso => new Date(iso).toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })
 
-export default function AdminMessages() {
+export default function AdminMessages({ theme: t = {} }) {
+  const fg      = t.fg      || '#fff'
+  const fgMuted = t.fgMuted || 'rgba(255,255,255,.45)'
+  const fgSubtle= t.fgSubtle|| 'rgba(255,255,255,.25)'
+  const cardBg  = t.cardBg  || 'rgba(30,11,46,.9)'
+  const border  = t.border  || 'rgba(90,46,166,.3)'
+  const itemBg  = t.itemBg  || 'rgba(255,255,255,.04)'
+  const catBtn  = t.catBtn  || 'rgba(255,255,255,.06)'
+  const catBtnText = t.catBtnText || 'rgba(255,255,255,.5)'
   const [msgs,     setMsgs]     = useState([])
   const [selected, setSelected] = useState(null)
   const [loading,  setLoading]  = useState(true)
@@ -44,10 +52,10 @@ export default function AdminMessages() {
     <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', height: 'calc(100vh - 64px)', overflow: 'hidden' }}>
 
       {/* ── Lista lateral ── */}
-      <div style={{ borderRight: '1px solid rgba(90,46,166,.2)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <div style={{ borderRight: `1px solid ${border}`, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
 
         {/* Filtros */}
-        <div style={{ padding: '1rem', borderBottom: '1px solid rgba(90,46,166,.15)', display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+        <div style={{ padding: '1rem', borderBottom: `1px solid ${border}`, display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
           {[
             { key: 'all',    label: `Todos (${msgs.length})` },
             { key: 'unread', label: `Não lidas (${unread})` },
@@ -56,34 +64,34 @@ export default function AdminMessages() {
             <button key={f.key} onClick={() => setFilter(f.key)} style={{
               padding: '0.3rem 0.7rem', borderRadius: 4, border: 'none', cursor: 'pointer',
               fontFamily: "'Poppins',sans-serif", fontSize: '0.72rem', fontWeight: 600,
-              background: filter === f.key ? '#5A2EA6' : 'rgba(255,255,255,.06)',
-              color: filter === f.key ? '#fff' : 'rgba(255,255,255,.5)',
+              background: filter === f.key ? '#5A2EA6' : catBtn,
+              color: filter === f.key ? '#fff' : catBtnText,
             }}>{f.label}</button>
           ))}
         </div>
 
         {/* Lista de mensagens */}
         <div style={{ overflowY: 'auto', flex: 1 }}>
-          {loading && <p style={{ color: 'rgba(255,255,255,.3)', textAlign: 'center', padding: '2rem', fontFamily: "'Poppins',sans-serif", fontSize: '0.82rem' }}>Carregando...</p>}
+          {loading && <p style={{ color: fgMuted, textAlign: 'center', padding: '2rem', fontFamily: "'Poppins',sans-serif", fontSize: '0.82rem' }}>Carregando...</p>}
           {!loading && filtered.length === 0 && (
-            <p style={{ color: 'rgba(255,255,255,.25)', textAlign: 'center', padding: '2rem', fontFamily: "'Poppins',sans-serif", fontSize: '0.82rem' }}>Nenhuma mensagem</p>
+            <p style={{ color: fgSubtle, textAlign: 'center', padding: '2rem', fontFamily: "'Poppins',sans-serif", fontSize: '0.82rem' }}>Nenhuma mensagem</p>
           )}
           {filtered.map(m => (
             <div key={m.id} onClick={() => handleSelect(m)} style={{
-              padding: '0.9rem 1rem', borderBottom: '1px solid rgba(90,46,166,.1)',
+              padding: '0.9rem 1rem', borderBottom: `1px solid ${border}`,
               cursor: 'pointer', transition: 'background .2s',
               background: selected?.id === m.id ? 'rgba(90,46,166,.2)' : m.read ? 'transparent' : 'rgba(90,46,166,.06)',
               borderLeft: `3px solid ${m.tipo === 'orcamento' ? '#FF2D8D' : '#5A2EA6'}`,
             }}
-            onMouseEnter={e => { if (selected?.id !== m.id) e.currentTarget.style.background = 'rgba(255,255,255,.04)' }}
+            onMouseEnter={e => { if (selected?.id !== m.id) e.currentTarget.style.background = itemBg }}
             onMouseLeave={e => { if (selected?.id !== m.id) e.currentTarget.style.background = m.read ? 'transparent' : 'rgba(90,46,166,.06)' }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.25rem' }}>
-                <span style={{ fontFamily: "'Montserrat',sans-serif", fontWeight: m.read ? 500 : 700, fontSize: '0.85rem', color: m.read ? 'rgba(255,255,255,.7)' : '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
+                <span style={{ fontFamily: "'Montserrat',sans-serif", fontWeight: m.read ? 500 : 700, fontSize: '0.85rem', color: m.read ? fgMuted : fg, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
                   {!m.read && <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: '#FF2D8D', marginRight: 6, verticalAlign: 'middle' }} />}
                   {m.nome || 'Anônimo'}
                 </span>
-                <span style={{ fontFamily: "'Poppins',sans-serif", fontSize: '0.65rem', color: 'rgba(255,255,255,.3)', flexShrink: 0 }}>{fmt(m.created_at)}</span>
+                <span style={{ fontFamily: "'Poppins',sans-serif", fontSize: '0.65rem', color: fgSubtle, flexShrink: 0 }}>{fmt(m.created_at)}</span>
               </div>
               <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
                 <span style={{
@@ -92,7 +100,7 @@ export default function AdminMessages() {
                   border: `1px solid ${m.tipo === 'orcamento' ? 'rgba(255,45,141,.3)' : 'rgba(90,46,166,.3)'}`,
                   borderRadius: 3, padding: '0.1rem 0.4rem', fontSize: '0.62rem', fontFamily: "'Poppins',sans-serif", fontWeight: 600,
                 }}>{m.tipo === 'orcamento' ? '📋 Briefing' : '💬 Contato'}</span>
-                <span style={{ color: 'rgba(255,255,255,.35)', fontSize: '0.72rem', fontFamily: "'Poppins',sans-serif", overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <span style={{ color: fgMuted, fontSize: '0.72rem', fontFamily: "'Poppins',sans-serif", overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {m.email}
                 </span>
               </div>
@@ -102,14 +110,14 @@ export default function AdminMessages() {
       </div>
 
       {/* ── Detalhe da mensagem ── */}
-      <div style={{ overflowY: 'auto', background: 'rgba(255,255,255,.02)' }}>
+      <div style={{ overflowY: 'auto', background: itemBg }}>
         {!selected ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'rgba(255,255,255,.2)', gap: '0.5rem' }}>
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
               <polyline points="22,6 12,13 2,6"/>
             </svg>
-            <p style={{ fontFamily: "'Poppins',sans-serif", fontSize: '0.88rem' }}>Selecione uma mensagem</p>
+            <p style={{ fontFamily: "'Poppins',sans-serif", fontSize: '0.88rem', color: fgSubtle }}>Selecione uma mensagem</p>
           </div>
         ) : (
           <div style={{ padding: '2rem', maxWidth: 700 }}>
@@ -124,11 +132,11 @@ export default function AdminMessages() {
                     borderRadius: 4, padding: '0.2rem 0.6rem', fontSize: '0.7rem', fontFamily: "'Poppins',sans-serif", fontWeight: 600,
                   }}>{selected.tipo === 'orcamento' ? '📋 Briefing de Orçamento' : '💬 Formulário de Contato'}</span>
                 </div>
-                <h2 style={{ fontFamily: "'Montserrat',sans-serif", fontWeight: 800, fontSize: '1.2rem', color: '#fff', marginBottom: '0.2rem' }}>
+                <h2 style={{ fontFamily: "'Montserrat',sans-serif", fontWeight: 800, fontSize: '1.2rem', color: fg, marginBottom: '0.2rem' }}>
                   {selected.nome || 'Sem nome'}
                 </h2>
                 <div style={{ fontFamily: "'Poppins',sans-serif", fontSize: '0.8rem', color: 'rgba(255,255,255,.5)' }}>
-                  {selected.email} · {fmt(selected.created_at)}
+                  <span style={{ color: fgMuted }}>{selected.email} · {fmt(selected.created_at)}</span>
                 </div>
               </div>
               <button onClick={() => handleDelete(selected.id)} style={{ background: 'rgba(239,68,68,.1)', border: '1px solid rgba(239,68,68,.25)', borderRadius: 6, padding: '0.4rem 0.9rem', color: '#f87171', fontFamily: "'Poppins',sans-serif", fontWeight: 600, fontSize: '0.75rem', cursor: 'pointer' }}>
@@ -137,7 +145,7 @@ export default function AdminMessages() {
             </div>
 
             {/* Separador */}
-            <div style={{ height: 1, background: 'rgba(90,46,166,.2)', marginBottom: '1.5rem' }} />
+            <div style={{ height: 1, background: border, marginBottom: '1.5rem' }} />
 
             {/* Conteúdo — Contato */}
             {selected.tipo === 'contato' && (
@@ -149,7 +157,7 @@ export default function AdminMessages() {
                 ].filter(f => f.value).map(f => (
                   <div key={f.label}>
                     <div style={{ fontFamily: "'Poppins',sans-serif", fontSize: '0.68rem', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,.35)', marginBottom: '0.3rem' }}>{f.label}</div>
-                    <div style={{ fontFamily: "'Poppins',sans-serif", fontSize: f.big ? '0.95rem' : '0.88rem', color: '#fff', lineHeight: 1.7, background: 'rgba(255,255,255,.04)', borderRadius: 6, padding: '0.7rem 0.9rem', border: '1px solid rgba(90,46,166,.15)', whiteSpace: 'pre-wrap' }}>
+                    <div style={{ fontFamily: "'Poppins',sans-serif", fontSize: f.big ? '0.95rem' : '0.88rem', color: fg, lineHeight: 1.7, background: itemBg, borderRadius: 6, padding: '0.7rem 0.9rem', border: `1px solid ${border}`, whiteSpace: 'pre-wrap' }}>
                       {f.value}
                     </div>
                   </div>
@@ -173,7 +181,7 @@ export default function AdminMessages() {
                     <div style={{ fontFamily: "'Poppins',sans-serif", fontSize: '0.68rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(168,85,247,.7)', marginBottom: '0.3rem' }}>
                       {i + 1}. {r.pergunta}
                     </div>
-                    <div style={{ fontFamily: "'Poppins',sans-serif", fontSize: '0.9rem', color: '#fff', lineHeight: 1.7, background: 'rgba(255,255,255,.04)', borderRadius: 6, padding: '0.7rem 0.9rem', border: '1px solid rgba(90,46,166,.15)', whiteSpace: 'pre-wrap' }}>
+                    <div style={{ fontFamily: "'Poppins',sans-serif", fontSize: '0.9rem', color: fg, lineHeight: 1.7, background: itemBg, borderRadius: 6, padding: '0.7rem 0.9rem', border: `1px solid ${border}`, whiteSpace: 'pre-wrap' }}>
                       {r.resposta}
                     </div>
                   </div>

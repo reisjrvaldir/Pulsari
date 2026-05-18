@@ -63,43 +63,55 @@ export default function AdminDashboard() {
 
   const projects = data[activeCat] || []
 
-  const bg      = darkMode ? '#0A0812' : '#f4f3f8'
-  const fg      = darkMode ? '#fff'    : '#1a0a2e'
-  const cardBg  = darkMode ? 'rgba(30,11,46,.9)' : '#fff'
-  const border  = darkMode ? 'rgba(90,46,166,.3)' : 'rgba(90,46,166,.2)'
+  const t = {
+    bg:         darkMode ? '#0A0812'              : '#f0eef8',
+    fg:         darkMode ? '#fff'                 : '#1a0a2e',
+    fgMuted:    darkMode ? 'rgba(255,255,255,.45)': 'rgba(26,10,46,.55)',
+    fgSubtle:   darkMode ? 'rgba(255,255,255,.25)': 'rgba(26,10,46,.3)',
+    cardBg:     darkMode ? 'rgba(30,11,46,.95)'   : '#fff',
+    border:     darkMode ? 'rgba(90,46,166,.3)'   : 'rgba(90,46,166,.25)',
+    itemBg:     darkMode ? 'rgba(255,255,255,.04)': 'rgba(90,46,166,.04)',
+    catBtn:     darkMode ? 'rgba(255,255,255,.06)': 'rgba(90,46,166,.08)',
+    catBtnText: darkMode ? 'rgba(255,255,255,.5)' : 'rgba(26,10,46,.5)',
+    inputBg:    darkMode ? 'rgba(255,255,255,.05)': '#f8f6ff',
+    inputColor: darkMode ? '#fff'                 : '#1a0a2e',
+    modalBg:    darkMode ? '#1a0b2e'              : '#fff',
+    sairBorder: darkMode ? 'rgba(255,255,255,.15)': 'rgba(26,10,46,.2)',
+    sairColor:  darkMode ? 'rgba(255,255,255,.6)' : 'rgba(26,10,46,.6)',
+  }
 
   return (
-    <div style={{ minHeight: '100vh', background: bg, fontFamily: "'Montserrat',sans-serif", color: fg, transition: 'background .3s, color .3s' }}>
+    <div style={{ minHeight: '100vh', background: t.bg, fontFamily: "'Montserrat',sans-serif", color: t.fg, transition: 'background .3s, color .3s' }}>
       <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
 
       {/* ── Topbar ── */}
       <div style={{
-        background: cardBg, backdropFilter: 'blur(20px)',
-        borderBottom: `1px solid ${border}`,
+        background: t.cardBg, backdropFilter: 'blur(20px)',
+        borderBottom: `1px solid ${t.border}`,
         padding: '0 2rem', height: 64,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         position: 'sticky', top: 0, zIndex: 50,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
           <div style={{ fontWeight: 900, fontSize: '1.2rem', letterSpacing: '0.1em', background: 'linear-gradient(135deg,#FF2D8D,#5A2EA6,#2D6BFF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            PULSARI <span style={{ fontSize: '0.65rem', WebkitTextFillColor: 'rgba(255,255,255,.4)', background: 'none', letterSpacing: '0.2em' }}>ADMIN</span>
+            PULSARI <span style={{ fontSize: '0.65rem', WebkitTextFillColor: t.fgMuted, background: 'none', letterSpacing: '0.2em' }}>ADMIN</span>
           </div>
           {/* Abas */}
           {[
             { key: 'portfolio',  label: 'Portfólio' },
             { key: 'mensagens',  label: 'Mensagens', badge: unread },
-          ].map(t => (
-            <button key={t.key} onClick={() => setTab(t.key)} style={{
+          ].map(tb => (
+            <button key={tb.key} onClick={() => setTab(tb.key)} style={{
               background: 'none', border: 'none', cursor: 'pointer',
               fontFamily: "'Poppins',sans-serif", fontWeight: 600, fontSize: '0.82rem',
-              color: tab === t.key ? '#fff' : 'rgba(255,255,255,.4)',
-              borderBottom: `2px solid ${tab === t.key ? '#a855f7' : 'transparent'}`,
+              color: tab === tb.key ? '#a855f7' : t.fgMuted,
+              borderBottom: `2px solid ${tab === tb.key ? '#a855f7' : 'transparent'}`,
               paddingBottom: '0.2rem', transition: 'all .2s',
               position: 'relative', display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
             }}>
-              {t.label}
-              {t.badge > 0 && (
-                <span style={{ background: '#FF2D8D', borderRadius: 10, padding: '0.1rem 0.4rem', fontSize: '0.62rem', color: '#fff', fontWeight: 700 }}>{t.badge}</span>
+              {tb.label}
+              {tb.badge > 0 && (
+                <span style={{ background: '#FF2D8D', borderRadius: 10, padding: '0.1rem 0.4rem', fontSize: '0.62rem', color: '#fff', fontWeight: 700 }}>{tb.badge}</span>
               )}
             </button>
           ))}
@@ -131,24 +143,24 @@ export default function AdminDashboard() {
             </svg>
             Voltar ao site
           </a>
-          <button onClick={handleLogout} style={{ background: 'none', border: '1px solid rgba(255,255,255,.15)', borderRadius: 6, padding: '0.4rem 0.9rem', color: 'rgba(255,255,255,.6)', fontSize: '0.78rem', cursor: 'pointer', fontFamily: 'inherit', transition: 'all .2s' }}
-            onMouseEnter={e => { e.target.style.borderColor = '#FF2D8D'; e.target.style.color = '#FF2D8D' }}
-            onMouseLeave={e => { e.target.style.borderColor = 'rgba(255,255,255,.15)'; e.target.style.color = 'rgba(255,255,255,.6)' }}>
+          <button onClick={handleLogout} style={{ background: 'none', border: `1px solid ${t.sairBorder}`, borderRadius: 6, padding: '0.4rem 0.9rem', color: t.sairColor, fontSize: '0.78rem', cursor: 'pointer', fontFamily: 'inherit', transition: 'all .2s' }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = '#FF2D8D'; e.currentTarget.style.color = '#FF2D8D' }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = t.sairBorder; e.currentTarget.style.color = t.sairColor }}>
             Sair
           </button>
         </div>
       </div>
 
       {/* ── Aba Mensagens ── */}
-      {tab === 'mensagens' && <AdminMessages />}
+      {tab === 'mensagens' && <AdminMessages theme={t} />}
 
       {/* ── Aba Portfólio ── */}
       {tab === 'portfolio' && <div style={{ maxWidth: 1100, margin: '0 auto', padding: '2rem 1.5rem' }}>
 
         {/* ── Header ── */}
         <div style={{ marginBottom: '2rem' }}>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.3rem' }}>Portfólio</h1>
-          <p style={{ color: 'rgba(255,255,255,.45)', fontFamily: "'Poppins',sans-serif", fontSize: '0.88rem' }}>
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.3rem', color: t.fg }}>Portfólio</h1>
+          <p style={{ color: t.fgMuted, fontFamily: "'Poppins',sans-serif", fontSize: '0.88rem' }}>
             Gerencie os projetos exibidos no site
           </p>
         </div>
@@ -159,8 +171,8 @@ export default function AdminDashboard() {
             <button key={key} onClick={() => setActiveCat(key)} style={{
               padding: '0.5rem 1.2rem', borderRadius: 6, border: 'none', cursor: 'pointer',
               fontFamily: 'inherit', fontWeight: 700, fontSize: '0.8rem', letterSpacing: '0.06em',
-              background: activeCat === key ? color : 'rgba(255,255,255,.06)',
-              color: activeCat === key ? '#fff' : 'rgba(255,255,255,.5)',
+              background: activeCat === key ? color : t.catBtn,
+              color: activeCat === key ? '#fff' : t.catBtnText,
               transition: 'all .2s',
             }}>
               {label} <span style={{ opacity: .7 }}>({(data[key] || []).length})</span>
@@ -170,7 +182,7 @@ export default function AdminDashboard() {
 
         {/* ── Barra de ações ── */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-          <span style={{ color: 'rgba(255,255,255,.4)', fontSize: '0.82rem', fontFamily: "'Poppins',sans-serif" }}>
+          <span style={{ color: t.fgMuted, fontSize: '0.82rem', fontFamily: "'Poppins',sans-serif" }}>
             {projects.length} projeto{projects.length !== 1 ? 's' : ''} em <strong style={{ color: CATS[activeCat].color }}>{CATS[activeCat].label}</strong>
           </span>
           <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
@@ -187,13 +199,13 @@ export default function AdminDashboard() {
         {/* ── Lista de projetos ── */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
           {projects.length === 0 && (
-            <div style={{ textAlign: 'center', padding: '3rem', color: 'rgba(255,255,255,.25)', fontFamily: "'Poppins',sans-serif" }}>
+            <div style={{ textAlign: 'center', padding: '3rem', color: t.fgSubtle, fontFamily: "'Poppins',sans-serif" }}>
               Nenhum projeto nesta categoria. Clique em "+ Adicionar".
             </div>
           )}
           {projects.map(p => (
             <div key={p.id} style={{
-              background: 'rgba(255,255,255,.04)', border: '1px solid rgba(90,46,166,.2)',
+              background: t.itemBg, border: `1px solid ${t.border}`,
               borderRadius: 8, padding: '1.1rem 1.4rem',
               display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem',
               transition: 'border-color .2s',
@@ -202,8 +214,8 @@ export default function AdminDashboard() {
             onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(90,46,166,.2)'}
             >
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontWeight: 700, fontSize: '1rem', marginBottom: '0.25rem', color: '#fff' }}>{p.nome}</div>
-                <div style={{ color: 'rgba(255,255,255,.5)', fontSize: '0.82rem', fontFamily: "'Poppins',sans-serif", marginBottom: '0.5rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.desc}</div>
+                <div style={{ fontWeight: 700, fontSize: '1rem', marginBottom: '0.25rem', color: t.fg }}>{p.nome}</div>
+                <div style={{ color: t.fgMuted, fontSize: '0.82rem', fontFamily: "'Poppins',sans-serif", marginBottom: '0.5rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.desc}</div>
                 <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
                   {p.tags?.map(t => (
                     <span key={t} style={{ background: 'rgba(90,46,166,.2)', border: '1px solid rgba(90,46,166,.3)', borderRadius: 4, padding: '0.15rem 0.5rem', fontSize: '0.68rem', color: '#a855f7', fontFamily: "'Poppins',sans-serif" }}>{t}</span>
@@ -226,7 +238,7 @@ export default function AdminDashboard() {
           display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200, padding: '1rem',
         }} onClick={e => { if (e.target === e.currentTarget) closeModal() }}>
           <div style={{
-            background: '#1a0b2e', border: '1px solid rgba(90,46,166,.4)',
+            background: t.modalBg, border: `1px solid ${t.border}`,
             borderRadius: 12, padding: '2rem', width: '100%', maxWidth: 560,
             maxHeight: '90vh', overflowY: 'auto',
           }}>
@@ -235,7 +247,7 @@ export default function AdminDashboard() {
                 {modal === 'add' ? '+ Novo projeto' : '✎ Editar projeto'}
                 <span style={{ marginLeft: '0.5rem', fontSize: '0.72rem', color: CATS[activeCat].color, letterSpacing: '0.1em' }}>{CATS[activeCat].label}</span>
               </h2>
-              <button onClick={closeModal} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,.4)', fontSize: '1.4rem', cursor: 'pointer', lineHeight: 1 }}>×</button>
+              <button onClick={closeModal} style={{ background: 'none', border: 'none', color: t.fgMuted, fontSize: '1.4rem', cursor: 'pointer', lineHeight: 1 }}>×</button>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -290,5 +302,7 @@ export default function AdminDashboard() {
 
 const btnEdit = { background: 'rgba(90,46,166,.2)', border: '1px solid rgba(90,46,166,.3)', borderRadius: 5, padding: '0.35rem 0.8rem', color: '#a855f7', fontFamily: "'Poppins',sans-serif", fontWeight: 600, fontSize: '0.75rem', cursor: 'pointer', transition: 'all .2s' }
 const btnDel  = { background: 'rgba(239,68,68,.1)', border: '1px solid rgba(239,68,68,.25)', borderRadius: 5, padding: '0.35rem 0.8rem', color: '#f87171', fontFamily: "'Poppins',sans-serif", fontWeight: 600, fontSize: '0.75rem', cursor: 'pointer', transition: 'all .2s' }
-const mLabelSt = { display: 'block', fontFamily: "'Poppins',sans-serif", fontSize: '0.72rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(255,255,255,.55)', marginBottom: '0.35rem' }
-const mInputSt = { width: '100%', background: 'rgba(255,255,255,.05)', border: '1px solid rgba(90,46,166,.3)', borderRadius: 6, padding: '0.65rem 0.85rem', color: '#fff', fontFamily: "'Poppins',sans-serif", fontSize: '0.88rem', outline: 'none', boxSizing: 'border-box' }
+const btnEdit  = { background: 'rgba(90,46,166,.2)', border: '1px solid rgba(90,46,166,.3)', borderRadius: 5, padding: '0.35rem 0.8rem', color: '#a855f7', fontFamily: "'Poppins',sans-serif", fontWeight: 600, fontSize: '0.75rem', cursor: 'pointer', transition: 'all .2s' }
+const btnDel   = { background: 'rgba(239,68,68,.1)', border: '1px solid rgba(239,68,68,.25)', borderRadius: 5, padding: '0.35rem 0.8rem', color: '#f87171', fontFamily: "'Poppins',sans-serif", fontWeight: 600, fontSize: '0.75rem', cursor: 'pointer', transition: 'all .2s' }
+const mLabelSt = { display: 'block', fontFamily: "'Poppins',sans-serif", fontSize: '0.72rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(168,85,247,.8)', marginBottom: '0.35rem' }
+const mInputSt = { width: '100%', background: 'rgba(255,255,255,.05)', border: '1px solid rgba(90,46,166,.3)', borderRadius: 6, padding: '0.65rem 0.85rem', color: '#1a0a2e', fontFamily: "'Poppins',sans-serif", fontSize: '0.88rem', outline: 'none', boxSizing: 'border-box' }
