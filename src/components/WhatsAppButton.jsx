@@ -28,7 +28,11 @@ export default function WhatsAppButton() {
           gap: '0.6rem',
           background: '#25D366',
           borderRadius: hovered ? 40 : '50%',
-          padding: hovered ? '0.75rem 1.2rem' : '0.85rem',
+          width: hovered ? 'auto' : 56,
+          height: hovered ? 'auto' : 56,
+          minWidth: hovered ? 'auto' : 56,
+          padding: hovered ? '0.75rem 1.2rem' : '0',
+          justifyContent: 'center',
           boxShadow: hovered
             ? '0 8px 32px rgba(37,211,102,.45)'
             : '0 4px 20px rgba(37,211,102,.35)',
