@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import Lenis from 'lenis'
 import Cursor from './components/Cursor'
+import WhatsAppButton from './components/WhatsAppButton'
 import Navbar from './components/Navbar'
 import GlobeScene from './components/GlobeScene'
 import ScrollReveal from './components/ScrollReveal'
@@ -28,6 +29,7 @@ export default function App() {
   return (
     <>
       <Cursor />
+      <WhatsAppButton />
       <GlobeScene />
       <ScrollReveal />
       <div id="scroll-container" style={{ position: 'relative', zIndex: 1 }}>
