@@ -1,7 +1,7 @@
 const stats = [
-  { num: '50+',   label: 'Projetos entregues' },
-  { num: '3 anos', label: 'De expertise digital' },
-  { num: '100%',  label: 'Clientes satisfeitos' },
+  { num: '+10',    label: 'Projetos entregues' },
+  { num: '+2 anos', label: 'De expertise digital' },
+  { num: '100%',   label: 'Clientes satisfeitos' },
 ]
 
 export default function Stats() {
