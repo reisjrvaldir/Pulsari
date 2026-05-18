@@ -41,7 +41,7 @@ export default function Navbar() {
       transition: 'all 0.4s ease',
     }}>
       <div style={{
-        maxWidth: 1200, margin: '0 auto', height: 96,
+        maxWidth: 1200, margin: '0 auto', height: 'clamp(64px, 10vh, 96px)',
         display: 'grid',
         gridTemplateColumns: 'auto 1fr auto',
         alignItems: 'center', gap: '1.5rem',
@@ -102,14 +102,15 @@ export default function Navbar() {
       {open && (
         <div style={{
           position: 'fixed', inset: 0, background: 'rgba(10,8,18,.97)',
-          display: 'flex', flexDirection: 'column',
-          alignItems: 'center', justifyContent: 'center', gap: '2.5rem', zIndex: 99,
+          display: 'flex', flexDirection: 'column', overflowY: 'auto',
+          alignItems: 'center', justifyContent: 'center', gap: '2rem', zIndex: 99,
+          padding: '2rem 1rem',
         }}>
           <span style={{ fontFamily: 'var(--font)', fontWeight: 900, fontSize: '2rem', letterSpacing: '0.2em', color: '#fff', marginBottom: '1rem' }}>PULSARI</span>
           {links.map(l => (
             <button key={l.label} onClick={() => scrollTo(l.href)} style={{
               background: 'none', border: 'none', color: 'var(--w)',
-              fontFamily: 'var(--font)', fontSize: '1.8rem', fontWeight: 800,
+              fontFamily: 'var(--font)', fontSize: 'clamp(1.2rem, 5vw, 1.8rem)', fontWeight: 800,
               letterSpacing: '0.06em', textTransform: 'uppercase', cursor: 'none',
             }}>{l.label}</button>
           ))}

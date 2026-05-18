@@ -167,7 +167,7 @@ export default function Portfolio() {
         {!activeCat && (
           <div className="rev" style={{ textAlign: 'center' }}>
             <h2 style={{
-              fontSize: 'clamp(5rem, 15vw, 14rem)', fontWeight: 800, lineHeight: 0.9,
+              fontSize: 'clamp(2.5rem, 15vw, 14rem)', fontWeight: 800, lineHeight: 0.9,
               background: 'linear-gradient(135deg, var(--w), var(--p3), var(--neon))',
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
               letterSpacing: '-0.04em', marginBottom: '2rem',
@@ -200,7 +200,7 @@ export default function Portfolio() {
 
             {/* Coluna esquerda sticky */}
             <div style={{
-              padding: '3rem 50px 3rem 0',
+              padding: 'clamp(1.5rem, 3vw, 3rem) clamp(1rem, 3%, 50px) clamp(1.5rem, 3vw, 3rem) 0',
               borderRight: '1px solid var(--border)',
               position: 'sticky', top: 80,
               height: 'calc(100vh - 80px)',
@@ -249,7 +249,7 @@ export default function Portfolio() {
 
             {/* Coluna direita */}
             <div style={{
-              padding: '3rem 0 3rem 50px',
+              padding: 'clamp(1.5rem, 3vw, 3rem) 0 clamp(1.5rem, 3vw, 3rem) clamp(1rem, 3%, 50px)',
               overflowY: 'auto', maxHeight: 'calc(100vh - 80px)',
             }}>
               <p style={{

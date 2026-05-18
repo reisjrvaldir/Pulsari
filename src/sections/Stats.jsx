@@ -24,7 +24,7 @@ export default function Stats() {
         {stats.map((s, i) => (
           <div key={s.num} className={`rev d${i + 1}`} style={{ textAlign: 'center' }}>
             <div style={{
-              fontSize: '2.8rem', fontWeight: 800, lineHeight: 1,
+              fontSize: 'clamp(2rem, 6vw, 2.8rem)', fontWeight: 800, lineHeight: 1,
               background: 'linear-gradient(135deg, var(--w), var(--p3))',
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
               marginBottom: '0.5rem',

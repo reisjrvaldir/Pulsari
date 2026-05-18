@@ -27,8 +27,8 @@ const etapas = [
 const ITEMS   = [...etapas, ...etapas]   /* 16 itens: original + cópia */
 const N       = etapas.length            /* 8 */
 const VISIBLE = 5
-const CARD_W  = 130
-const GAP     = 8
+const CARD_W  = 160
+const GAP     = 12
 
 function hexToRgb(hex) {
   return `${parseInt(hex.slice(1,3),16)},${parseInt(hex.slice(3,5),16)},${parseInt(hex.slice(5,7),16)}`

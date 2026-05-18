@@ -37,7 +37,7 @@ export default function Hero() {
         textAlign: 'center',
         maxWidth: 900,
         width: '100%',
-        paddingTop: '5rem',
+        paddingTop: 'clamp(2rem, 10vh, 5rem)',
       }}>
 
         {/* Eyebrow */}
@@ -45,7 +45,7 @@ export default function Hero() {
           <span style={{ flex: 1, height: 1, background: 'linear-gradient(90deg, transparent, var(--p3))' }} />
           <span style={{
             fontFamily: 'var(--font2)', fontSize: '0.7rem', fontWeight: 600,
-            letterSpacing: '0.3em', color: 'var(--p3)', textTransform: 'uppercase', whiteSpace: 'nowrap',
+            letterSpacing: '0.3em', color: 'var(--p3)', textTransform: 'uppercase',
           }}>
             // CÓDIGO QUE GERA RECEITA DE VERDADE
           </span>

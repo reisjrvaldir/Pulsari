@@ -170,7 +170,7 @@ export default function Contact() {
   const isCards = view === 'cards'
 
   return (
-    <section id="contato" style={{ padding: '8rem 5%', position: 'relative', overflow: 'hidden' }}>
+    <section id="contato" style={{ padding: 'clamp(4rem, 10vw, 8rem) 5%', position: 'relative', overflow: 'hidden' }}>
       {/* Fundo escuro */}
       <div style={{ position: 'absolute', inset: 0, background: 'rgba(3,2,12,.80)', zIndex: 1, pointerEvents: 'none' }} />
 
