@@ -32,6 +32,7 @@ const FALLBACK = {
       desc: 'Construção de site institucional para empresa do setor de iluminação LED.',
       tags: ['WordPress', 'HTML', 'CSS', 'SQL'],
       context: 'Construção de site institucional, atendendo o design system e aplicando SEO.',
+      imagem: 'https://i.imgur.com/VUeKSG0.jpg',
       linkSistema: 'https://alphaledpaineis.com.br',
       link: 'https://alphaledpaineis.com.br',
     },
