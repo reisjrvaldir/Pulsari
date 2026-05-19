@@ -53,6 +53,7 @@ const FALLBACK = {
       desc: 'Construção de site institucional para empresa do setor de iluminação LED.',
       tags: ['WordPress', 'HTML', 'CSS', 'SQL'],
       context: 'Site institucional completo para a Alpha LED, com catálogo de produtos, páginas de serviço e integração com formulário de orçamento.',
+      imagem: 'https://lh3.googleusercontent.com/d/1mcXV3BBDJKm3_UYZQTi4v6te0jB',
       link: '#',
     },
   ],
@@ -155,6 +156,7 @@ export default function Portfolio() {
   const [activeCard,  setActiveCard] = useState(0)
   const [expanded,    setExpanded]   = useState(null)
   const [imgOffset,   setImgOffset]  = useState({ x: 0, y: 0 })
+  const [imgError,    setImgError]   = useState(false)
   const imgRef = useRef(null)
 
   /* Atualiza dados quando a aba volta ao foco (usuário saiu do admin e voltou) */
@@ -174,18 +176,20 @@ export default function Portfolio() {
     setImgOffset({ x, y })
   }
 
-  const selectCat = cat => { setActiveCat(cat); setActiveCard(0); setExpanded(null) }
-  const goBack    = ()  => { setActiveCat(null); setActiveCard(0); setExpanded(null) }
+  const selectCat = cat => { setActiveCat(cat); setActiveCard(0); setExpanded(null); setImgError(false) }
+  const goBack    = ()  => { setActiveCat(null); setActiveCard(0); setExpanded(null); setImgError(false) }
 
   const goPrev = () => {
     setActiveCard(i => (i - 1 + projects.length) % projects.length)
     setExpanded(null)
     setImgOffset({ x: 0, y: 0 })
+    setImgError(false)
   }
   const goNext = () => {
     setActiveCard(i => (i + 1) % projects.length)
     setExpanded(null)
     setImgOffset({ x: 0, y: 0 })
+    setImgError(false)
   }
 
   /* Navegação por teclado ← → quando portfólio está aberto */
@@ -326,23 +330,26 @@ export default function Portfolio() {
                     style={{ height: 240, position: 'relative', overflow: 'hidden', cursor: proj.linkSistema ? 'pointer' : 'none' }}
                     onClick={() => proj.linkSistema && window.open(proj.linkSistema, '_blank')}
                   >
-                    {proj.imagem ? (
-                      <img src={proj.imagem} alt={proj.nome} style={{
-                        position: 'absolute', inset: '-20px', width: 'calc(100% + 40px)', height: 'calc(100% + 40px)',
-                        objectFit: 'cover',
-                        transform: `translate(${imgOffset.x * 0.5}px, ${imgOffset.y * 0.5}px) scale(1.05)`,
-                        transition: 'transform .1s ease',
-                      }} />
-                    ) : (
-                      <div style={{
-                        position: 'absolute', inset: '-20px',
-                        background: gradients[activeCard % gradients.length],
-                        transform: `translate(${imgOffset.x * 0.5}px, ${imgOffset.y * 0.5}px) scale(1.1)`,
-                        transition: 'transform .1s ease',
-                      }} />
-                    )}
-                    {!proj.imagem && (
-                      <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)', backgroundSize: '40px 40px', opacity: 0.4 }} />
+                    {/* Fundo: imagem real ou gradiente fallback */}
+                    <div style={{
+                      position: 'absolute', inset: '-20px',
+                      background: gradients[activeCard % gradients.length],
+                      transform: `translate(${imgOffset.x * 0.5}px, ${imgOffset.y * 0.5}px) scale(1.1)`,
+                      transition: 'transform .1s ease',
+                    }} />
+                    {/* Grid decorativo sobre gradiente */}
+                    <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)', backgroundSize: '40px 40px', opacity: 0.4 }} />
+                    {/* Imagem real (se existir e não der erro) */}
+                    {proj.imagem && !imgError && (
+                      <img src={proj.imagem} alt={proj.nome}
+                        onError={() => setImgError(true)}
+                        style={{
+                          position: 'absolute', inset: '-20px', width: 'calc(100% + 40px)', height: 'calc(100% + 40px)',
+                          objectFit: 'cover',
+                          transform: `translate(${imgOffset.x * 0.5}px, ${imgOffset.y * 0.5}px) scale(1.05)`,
+                          transition: 'transform .1s ease',
+                        }}
+                      />
                     )}
 
 
