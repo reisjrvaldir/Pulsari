@@ -28,32 +28,10 @@ const FALLBACK = {
   ],
   landing: [
     {
-      id: 'f4', nome: 'Lançamento Orion',
-      desc: 'Landing de produto com funil otimizado e taxa de conversão de 8.4%.',
-      tags: ['React', 'GSAP', 'RD Station'],
-      context: 'Criado para um lançamento com janela de 7 dias, o projeto exigiu velocidade de desenvolvimento sem abrir mão da performance. Integração completa com RD Station para nutrição automática dos leads captados.',
-      link: '#',
-    },
-    {
-      id: 'f5', nome: 'Curso Marketing Digital',
-      desc: 'Copy + design alinhados: 1.200 inscrições na primeira semana de tráfego pago.',
-      tags: ['HTML', 'CSS', 'JS', 'Hotmart'],
-      context: 'Trabalhamos junto ao copywriter do cliente para garantir que design e texto se potencializassem mutuamente. Integração com Hotmart e pixel de conversão configurado para rastrear cada etapa do funil.',
-      link: '#',
-    },
-    {
-      id: 'f6', nome: 'Clínica Estética Premium',
-      desc: 'Página de captura com formulário inteligente e automação de resposta em 5 min.',
-      tags: ['React', 'EmailJS'],
-      context: 'O maior problema era o tempo de resposta ao lead. Implementamos automação que envia uma mensagem personalizada em menos de 5 minutos após o preenchimento do formulário, reduzindo drasticamente a desistência.',
-      link: '#',
-    },
-    {
       id: 'f12', nome: 'ALPHA LED',
       desc: 'Construção de site institucional para empresa do setor de iluminação LED.',
       tags: ['WordPress', 'HTML', 'CSS', 'SQL'],
       context: 'Site institucional completo para a Alpha LED, com catálogo de produtos, páginas de serviço e integração com formulário de orçamento.',
-      imagem: 'https://lh3.googleusercontent.com/d/1mcXV3BBDJKm3_UYZQTi4v6te0jB',
       link: '#',
     },
   ],
@@ -132,18 +110,23 @@ const gradients = [
   'linear-gradient(135deg, #2d0d5e 0%, #1a0533 100%)',
 ]
 
+const DATA_VERSION = 'v3' /* deve ser igual ao portfolioService.js */
+
 /* Lê dados do localStorage (admin) com fallback nos dados internos */
 function loadPortData() {
   try {
+    /* Se versão divergiu, ignora localStorage e usa FALLBACK atualizado */
+    if (localStorage.getItem('pulsari_portfolio_version') !== DATA_VERSION) {
+      return FALLBACK
+    }
     const saved = localStorage.getItem('pulsari_portfolio')
     if (saved) {
       const parsed = JSON.parse(saved)
-      /* mescla: garante que cada categoria exista */
       return {
-        sites:     parsed.sites     || FALLBACK.sites,
-        landing:   parsed.landing   || FALLBACK.landing,
-        ecommerce: parsed.ecommerce || FALLBACK.ecommerce,
-        sistemas:  parsed.sistemas  || FALLBACK.sistemas,
+        sites:     Array.isArray(parsed.sites)     ? parsed.sites     : FALLBACK.sites,
+        landing:   Array.isArray(parsed.landing)   ? parsed.landing   : FALLBACK.landing,
+        ecommerce: Array.isArray(parsed.ecommerce) ? parsed.ecommerce : FALLBACK.ecommerce,
+        sistemas:  Array.isArray(parsed.sistemas)  ? parsed.sistemas  : FALLBACK.sistemas,
       }
     }
   } catch {}
@@ -415,8 +398,14 @@ export default function Portfolio() {
                         fontFamily: 'var(--font2)', fontSize: '0.9rem',
                         color: 'var(--w)', lineHeight: 1.8, marginBottom: '1rem',
                       }}>{proj.context}</p>
-                      {proj.link && proj.link !== '#' && (
-                        <a href={proj.link} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ fontSize: '0.72rem' }}>
+                      {proj.link && (
+                        <a href={proj.link !== '#' ? proj.link : undefined}
+                          target={proj.link !== '#' ? '_blank' : undefined}
+                          rel="noopener noreferrer"
+                          className="btn btn-primary"
+                          style={{ fontSize: '0.72rem', opacity: proj.link === '#' ? 0.5 : 1, cursor: proj.link === '#' ? 'not-allowed' : 'none' }}
+                          onClick={e => proj.link === '#' && e.preventDefault()}
+                        >
                           Visitar projeto ↗
                         </a>
                       )}

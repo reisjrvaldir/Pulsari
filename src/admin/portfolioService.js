@@ -2,6 +2,8 @@
 /* Salva/lê do localStorage; pode ser migrado para API/Firebase futuramente */
 
 const KEY = 'pulsari_portfolio'
+const DATA_VERSION = 'v3' /* ← mude aqui para forçar reset do localStorage em todos os browsers */
+const VERSION_KEY = 'pulsari_portfolio_version'
 
 const DEFAULT = {
   sites: [
@@ -10,10 +12,7 @@ const DEFAULT = {
     { id: '3', nome: 'Construtora Horizonte', desc: 'Plataforma imersiva com mapa interativo e visualização 3D dos empreendimentos.', tags: ['React','Three.js','Mapbox'], context: 'Construtoras competem com grandes portais de imóveis. Criamos um diferencial competitivo com tour virtual 3D dos empreendimentos e mapa interativo com filtros avançados — diretamente no site próprio da empresa.', link: '#' },
   ],
   landing: [
-    { id: '4', nome: 'Lançamento Orion', desc: 'Landing de produto com funil otimizado e taxa de conversão de 8.4%.', tags: ['React','GSAP','RD Station'], context: 'Criado para um lançamento com janela de 7 dias, o projeto exigiu velocidade de desenvolvimento sem abrir mão da performance. Integração completa com RD Station para nutrição automática dos leads captados.', link: '#' },
-    { id: '5', nome: 'Curso Marketing Digital', desc: 'Copy + design alinhados: 1.200 inscrições na primeira semana de tráfego pago.', tags: ['HTML','CSS','JS','Hotmart'], context: 'Trabalhamos junto ao copywriter do cliente para garantir que design e texto se potencializassem mutuamente. Integração com Hotmart e pixel de conversão configurado para rastrear cada etapa do funil.', link: '#' },
-    { id: '6', nome: 'Clínica Estética Premium', desc: 'Página de captura com formulário inteligente e automação de resposta em 5 min.', tags: ['React','EmailJS'], context: 'O maior problema era o tempo de resposta ao lead. Implementamos automação que envia uma mensagem personalizada em menos de 5 minutos após o preenchimento do formulário, reduzindo drasticamente a desistência.', link: '#' },
-    { id: '12', nome: 'ALPHA LED', desc: 'Construção de site institucional para empresa do setor de iluminação LED.', tags: ['WordPress','HTML','CSS','SQL'], context: 'Site institucional completo para a Alpha LED, com catálogo de produtos, páginas de serviço e integração com formulário de orçamento.', imagem: 'https://lh3.googleusercontent.com/d/1mcXV3BBDJKm3_UYZQTi4v6te0jB', link: '#' },
+    { id: '12', nome: 'ALPHA LED', desc: 'Construção de site institucional para empresa do setor de iluminação LED.', tags: ['WordPress','HTML','CSS','SQL'], context: 'Site institucional completo para a Alpha LED, com catálogo de produtos, páginas de serviço e integração com formulário de orçamento.', link: '#' },
   ],
   ecommerce: [
     { id: '7', nome: 'Moda Pernambucana', desc: 'E-commerce que faturou R$ 180k no primeiro mês com foco em UX e checkout rápido.', tags: ['Next.js','Stripe','PostgreSQL'], context: 'Desenvolvemos um fluxo de compra com o menor número possível de cliques do carrinho ao pagamento. Checkout otimizado, relatórios em tempo real e painel administrativo completo para gestão do estoque.', link: '#' },
@@ -28,6 +27,12 @@ const DEFAULT = {
 
 export const getPortfolio = () => {
   try {
+    /* Se a versão mudou, limpa o localStorage e usa o DEFAULT novo */
+    if (localStorage.getItem(VERSION_KEY) !== DATA_VERSION) {
+      localStorage.removeItem(KEY)
+      localStorage.setItem(VERSION_KEY, DATA_VERSION)
+      return DEFAULT
+    }
     const raw = localStorage.getItem(KEY)
     return raw ? JSON.parse(raw) : DEFAULT
   } catch { return DEFAULT }
