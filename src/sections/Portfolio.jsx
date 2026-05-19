@@ -418,12 +418,30 @@ export default function Portfolio() {
                 </div>
               )}
 
-              {/* ── Navegação: dots + Próximo ── */}
+              {/* ── Navegação: Anterior + dots + Próximo ── */}
               {total > 1 && (
                 <div style={{
                   display: 'flex', justifyContent: 'center', alignItems: 'center',
                   marginTop: '1.2rem', gap: '1rem',
                 }}>
+
+                  {/* Botão ANTERIOR */}
+                  <button onClick={goPrev} style={{
+                    display: 'flex', alignItems: 'center', gap: '0.5rem',
+                    background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.15)',
+                    borderRadius: 8, padding: '0.6rem 1.1rem',
+                    color: 'rgba(255,255,255,.7)', fontFamily: "'Poppins',sans-serif",
+                    fontWeight: 600, fontSize: '0.82rem', cursor: 'none',
+                    transition: 'all .2s', letterSpacing: '0.04em',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background='rgba(90,46,166,.3)'; e.currentTarget.style.borderColor='var(--p)'; e.currentTarget.style.color='#fff' }}
+                  onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,.05)'; e.currentTarget.style.borderColor='rgba(255,255,255,.15)'; e.currentTarget.style.color='rgba(255,255,255,.7)' }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+                    </svg>
+                    Anterior
+                  </button>
 
                   {/* Dots */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
