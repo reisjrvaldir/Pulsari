@@ -347,11 +347,6 @@ export default function Portfolio() {
                     onMouseEnter={e => e.currentTarget.style.opacity = 1}
                     onMouseLeave={e => e.currentTarget.style.opacity = 0}
                     >
-                      {proj.linkSistema && (
-                        <span style={{ background: 'rgba(255,45,141,.85)', border: '1px solid #FF2D8D', borderRadius: 3, padding: '0.5rem 1rem', color: '#fff', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                          ↗ Acessar sistema
-                        </span>
-                      )}
                       <button className="btn btn-primary"
                         onClick={e => { e.stopPropagation(); setExpanded(expanded === activeCard ? null : activeCard) }}>
                         + Informações
