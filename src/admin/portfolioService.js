@@ -2,7 +2,7 @@
 /* Salva/lê do localStorage; pode ser migrado para API/Firebase futuramente */
 
 const KEY = 'pulsari_portfolio'
-const DATA_VERSION = 'v3' /* ← mude aqui para forçar reset do localStorage em todos os browsers */
+const DATA_VERSION = 'v4' /* ← mude aqui para forçar reset do localStorage em todos os browsers */
 const VERSION_KEY = 'pulsari_portfolio_version'
 
 const DEFAULT = {
@@ -12,7 +12,7 @@ const DEFAULT = {
     { id: '3', nome: 'Construtora Horizonte', desc: 'Plataforma imersiva com mapa interativo e visualização 3D dos empreendimentos.', tags: ['React','Three.js','Mapbox'], context: 'Construtoras competem com grandes portais de imóveis. Criamos um diferencial competitivo com tour virtual 3D dos empreendimentos e mapa interativo com filtros avançados — diretamente no site próprio da empresa.', link: '#' },
   ],
   landing: [
-    { id: '12', nome: 'ALPHA LED', desc: 'Construção de site institucional para empresa do setor de iluminação LED.', tags: ['WordPress','HTML','CSS','SQL'], context: 'Site institucional completo para a Alpha LED, com catálogo de produtos, páginas de serviço e integração com formulário de orçamento.', link: '#' },
+    { id: '12', nome: 'ALPHA LED', desc: 'Construção de site institucional para empresa do setor de iluminação LED.', tags: ['WordPress','HTML','CSS','SQL'], context: 'Construção de site institucional, atendendo o design system e aplicando SEO.', linkSistema: 'https://alphaledpaineis.com.br', link: 'https://alphaledpaineis.com.br' },
   ],
   ecommerce: [
     { id: '7', nome: 'Moda Pernambucana', desc: 'E-commerce que faturou R$ 180k no primeiro mês com foco em UX e checkout rápido.', tags: ['Next.js','Stripe','PostgreSQL'], context: 'Desenvolvemos um fluxo de compra com o menor número possível de cliques do carrinho ao pagamento. Checkout otimizado, relatórios em tempo real e painel administrativo completo para gestão do estoque.', link: '#' },

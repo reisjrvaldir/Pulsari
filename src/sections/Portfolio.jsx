@@ -31,8 +31,9 @@ const FALLBACK = {
       id: 'f12', nome: 'ALPHA LED',
       desc: 'Construção de site institucional para empresa do setor de iluminação LED.',
       tags: ['WordPress', 'HTML', 'CSS', 'SQL'],
-      context: 'Site institucional completo para a Alpha LED, com catálogo de produtos, páginas de serviço e integração com formulário de orçamento.',
-      link: '#',
+      context: 'Construção de site institucional, atendendo o design system e aplicando SEO.',
+      linkSistema: 'https://alphaledpaineis.com.br',
+      link: 'https://alphaledpaineis.com.br',
     },
   ],
   ecommerce: [
@@ -110,7 +111,7 @@ const gradients = [
   'linear-gradient(135deg, #2d0d5e 0%, #1a0533 100%)',
 ]
 
-const DATA_VERSION = 'v3' /* deve ser igual ao portfolioService.js */
+const DATA_VERSION = 'v4' /* deve ser igual ao portfolioService.js */
 
 /* Lê dados do localStorage (admin) com fallback nos dados internos */
 function loadPortData() {
@@ -398,13 +399,13 @@ export default function Portfolio() {
                         fontFamily: 'var(--font2)', fontSize: '0.9rem',
                         color: 'var(--w)', lineHeight: 1.8, marginBottom: '1rem',
                       }}>{proj.context}</p>
-                      {proj.link && (
-                        <a href={proj.link !== '#' ? proj.link : undefined}
-                          target={proj.link !== '#' ? '_blank' : undefined}
+                      {proj.link && proj.link !== '#' && (
+                        <a
+                          href={proj.link}
+                          target="_blank"
                           rel="noopener noreferrer"
                           className="btn btn-primary"
-                          style={{ fontSize: '0.72rem', opacity: proj.link === '#' ? 0.5 : 1, cursor: proj.link === '#' ? 'not-allowed' : 'none' }}
-                          onClick={e => proj.link === '#' && e.preventDefault()}
+                          style={{ fontSize: '0.72rem' }}
                         >
                           Visitar projeto ↗
                         </a>
