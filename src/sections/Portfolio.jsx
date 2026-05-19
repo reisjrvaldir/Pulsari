@@ -304,32 +304,33 @@ export default function Portfolio() {
 
               {proj && (
                 <div key={proj.id || activeCard} style={{
-                  border: '1px solid var(--border)', borderRadius: 5,
-                  background: 'rgba(6,5,26,.8)', backdropFilter: 'blur(10px)',
-                  overflow: 'hidden',
+                  border: '1px solid var(--border)', borderRadius: 8,
+                  overflow: 'hidden', position: 'relative',
                   animation: 'slideR .4s cubic-bezier(0.22,1,0.36,1)',
+                  cursor: 'none',
                 }}>
-                  {/* Área de imagem com parallax */}
+                  {/* ── Card com imagem preenchendo tudo ── */}
                   <div ref={imgRef} onMouseMove={handleImgMove}
                     onMouseLeave={() => setImgOffset({ x: 0, y: 0 })}
-                    style={{ height: 240, position: 'relative', overflow: 'hidden', cursor: proj.linkSistema ? 'pointer' : 'none' }}
-                    onClick={() => proj.linkSistema && window.open(proj.linkSistema, '_blank')}
+                    style={{ position: 'relative', overflow: 'hidden', minHeight: 380 }}
                   >
-                    {/* Fundo: imagem real ou gradiente fallback */}
+                    {/* Gradiente fallback */}
                     <div style={{
                       position: 'absolute', inset: '-20px',
                       background: gradients[activeCard % gradients.length],
                       transform: `translate(${imgOffset.x * 0.5}px, ${imgOffset.y * 0.5}px) scale(1.1)`,
                       transition: 'transform .1s ease',
                     }} />
-                    {/* Grid decorativo sobre gradiente */}
-                    <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)', backgroundSize: '40px 40px', opacity: 0.4 }} />
-                    {/* Imagem real (se existir e não der erro) */}
+                    {!proj.imagem && (
+                      <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)', backgroundSize: '40px 40px', opacity: 0.3 }} />
+                    )}
+                    {/* Imagem real */}
                     {proj.imagem && !imgError && (
                       <img src={proj.imagem} alt={proj.nome}
                         onError={() => setImgError(true)}
                         style={{
-                          position: 'absolute', inset: '-20px', width: 'calc(100% + 40px)', height: 'calc(100% + 40px)',
+                          position: 'absolute', inset: '-20px',
+                          width: 'calc(100% + 40px)', height: 'calc(100% + 40px)',
                           objectFit: 'cover',
                           transform: `translate(${imgOffset.x * 0.5}px, ${imgOffset.y * 0.5}px) scale(1.05)`,
                           transition: 'transform .1s ease',
@@ -337,77 +338,70 @@ export default function Portfolio() {
                       />
                     )}
 
-
-                    {/* Hover overlay */}
-                    <div className="img-overlay" style={{
+                    {/* Gradiente escuro na base para legibilidade */}
+                    <div style={{
                       position: 'absolute', inset: 0,
-                      background: 'rgba(0,0,0,.5)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem',
-                      opacity: 0, transition: 'opacity .3s',
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.opacity = 1}
-                    onMouseLeave={e => e.currentTarget.style.opacity = 0}
-                    >
-                      <button className="btn btn-primary"
-                        onClick={e => { e.stopPropagation(); setExpanded(expanded === activeCard ? null : activeCard) }}>
-                        + Informações
-                      </button>
-                    </div>
+                      background: 'linear-gradient(to bottom, transparent 30%, rgba(6,5,26,.95) 100%)',
+                      zIndex: 1,
+                    }} />
 
-                    {/* Tag categoria */}
-                    <div style={{
-                      position: 'absolute', bottom: 12, left: 16,
-                      background: 'rgba(124,58,237,.25)', border: '1px solid var(--border)',
-                      borderRadius: 2, padding: '0.2rem 0.6rem',
-                      fontFamily: 'var(--font2)', fontSize: '0.65rem',
-                      letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--p3)',
-                    }}>{catLabels[activeCat]}</div>
-                  </div>
+                    {/* Info sobreposta na base */}
+                    <div style={{ position: 'relative', zIndex: 2, padding: '1.5rem' }}>
+                      {/* Espaçador para empurrar conteúdo para baixo */}
+                      <div style={{ height: 180 }} />
 
-                  {/* Info do card */}
-                  <div style={{ padding: '1.5rem' }}>
-                    <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--w)' }}>
-                      {proj.nome}
-                    </h3>
-                    <p style={{
-                      fontFamily: 'var(--font2)', fontSize: '0.95rem',
-                      color: 'var(--w)', lineHeight: 1.6, marginBottom: '1rem',
-                    }}>{proj.desc}</p>
-                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                      {(Array.isArray(proj.tags) ? proj.tags : []).map(tag => (
-                        <span key={tag} style={{
-                          padding: '0.2rem 0.6rem', borderRadius: 2,
-                          border: '1px solid var(--border)', color: 'var(--p3)',
-                          fontFamily: 'var(--font2)', fontSize: '0.72rem', letterSpacing: '0.08em',
-                        }}>{tag}</span>
-                      ))}
-                    </div>
-                  </div>
+                      {/* Tag categoria */}
+                      <div style={{
+                        display: 'inline-block', marginBottom: '0.6rem',
+                        background: 'rgba(124,58,237,.3)', border: '1px solid var(--border)',
+                        borderRadius: 2, padding: '0.2rem 0.6rem',
+                        fontFamily: 'var(--font2)', fontSize: '0.62rem',
+                        letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--p3)',
+                      }}>{catLabels[activeCat]}</div>
 
-                  {/* Painel de detalhes */}
-                  {expanded === activeCard && proj.context && (
-                    <div style={{
-                      padding: '1.25rem 1.5rem',
-                      borderTop: '1px solid var(--border)',
-                      animation: 'fadeIn .4s ease',
-                    }}>
+                      <h3 style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '0.4rem', color: '#fff' }}>
+                        {proj.nome}
+                      </h3>
                       <p style={{
-                        fontFamily: 'var(--font2)', fontSize: '0.9rem',
-                        color: 'var(--w)', lineHeight: 1.8, marginBottom: '1rem',
-                      }}>{proj.context}</p>
-                      {proj.link && proj.link !== '#' && (
-                        <a
-                          href={proj.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn btn-primary"
-                          style={{ fontSize: '0.72rem' }}
-                        >
-                          Visitar projeto ↗
-                        </a>
+                        fontFamily: 'var(--font2)', fontSize: '0.88rem',
+                        color: 'rgba(255,255,255,.75)', lineHeight: 1.5, marginBottom: '0.8rem',
+                      }}>{proj.desc}</p>
+                      <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
+                        {(Array.isArray(proj.tags) ? proj.tags : []).map(tag => (
+                          <span key={tag} style={{
+                            padding: '0.2rem 0.55rem', borderRadius: 2,
+                            border: '1px solid rgba(255,255,255,.2)', color: 'rgba(255,255,255,.65)',
+                            fontFamily: 'var(--font2)', fontSize: '0.68rem', letterSpacing: '0.06em',
+                            background: 'rgba(255,255,255,.06)',
+                          }}>{tag}</span>
+                        ))}
+                      </div>
+
+                      {/* Botão + Informações */}
+                      <button className="btn btn-primary"
+                        style={{ fontSize: '0.72rem', marginBottom: expanded === activeCard ? '1rem' : 0 }}
+                        onClick={e => { e.stopPropagation(); setExpanded(expanded === activeCard ? null : activeCard) }}>
+                        {expanded === activeCard ? '— Fechar' : '+ Informações'}
+                      </button>
+
+                      {/* Painel expandido */}
+                      {expanded === activeCard && proj.context && (
+                        <div style={{ animation: 'fadeIn .35s ease' }}>
+                          <p style={{
+                            fontFamily: 'var(--font2)', fontSize: '0.88rem',
+                            color: 'rgba(255,255,255,.75)', lineHeight: 1.8, marginBottom: '1rem',
+                            borderTop: '1px solid rgba(255,255,255,.1)', paddingTop: '1rem',
+                          }}>{proj.context}</p>
+                          {proj.link && proj.link !== '#' && (
+                            <a href={proj.link} target="_blank" rel="noopener noreferrer"
+                              className="btn btn-primary" style={{ fontSize: '0.72rem' }}>
+                              Visitar projeto ↗
+                            </a>
+                          )}
+                        </div>
                       )}
                     </div>
-                  )}
+                  </div>
                 </div>
               )}
 
