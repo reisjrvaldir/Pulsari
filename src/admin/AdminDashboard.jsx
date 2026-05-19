@@ -28,7 +28,7 @@ export default function AdminDashboard() {
   const handleLogout = () => { logout(); nav('/admin/login') }
 
   const openAdd = () => { setForm(EMPTY_FORM); setModal('add') }
-  const openEdit = p => { setForm({ ...p, tags: p.tags.join(', ') }); setModal({ id: p.id }) }
+  const openEdit = p => { setForm({ ...p, tags: Array.isArray(p.tags) ? p.tags.join(', ') : '' }); setModal({ id: p.id }) }
   const closeModal = () => { setModal(null); setForm(EMPTY_FORM) }
 
   const handleSave = () => {
@@ -281,7 +281,7 @@ export default function AdminDashboard() {
               ))}
 
               <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
-                <button onClick={closeModal} style={{ flex: 1, background: 'rgba(255,255,255,.06)', border: '1px solid rgba(255,255,255,.12)', borderRadius: 6, padding: '0.7rem', color: 'rgba(255,255,255,.6)', fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer' }}>
+                <button onClick={closeModal} style={{ flex: 1, background: 'rgba(255,255,255,.06)', border: `1px solid ${t.border}`, borderRadius: 6, padding: '0.7rem', color: t.fgMuted, fontFamily: 'inherit', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer' }}>
                   Cancelar
                 </button>
                 <button onClick={handleSave} disabled={!form.nome || !form.desc} style={{
@@ -303,4 +303,4 @@ export default function AdminDashboard() {
 const btnEdit = { background: 'rgba(90,46,166,.2)', border: '1px solid rgba(90,46,166,.3)', borderRadius: 5, padding: '0.35rem 0.8rem', color: '#a855f7', fontFamily: "'Poppins',sans-serif", fontWeight: 600, fontSize: '0.75rem', cursor: 'pointer', transition: 'all .2s' }
 const btnDel  = { background: 'rgba(239,68,68,.1)', border: '1px solid rgba(239,68,68,.25)', borderRadius: 5, padding: '0.35rem 0.8rem', color: '#f87171', fontFamily: "'Poppins',sans-serif", fontWeight: 600, fontSize: '0.75rem', cursor: 'pointer', transition: 'all .2s' }
 const mLabelSt = { display: 'block', fontFamily: "'Poppins',sans-serif", fontSize: '0.72rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(168,85,247,.8)', marginBottom: '0.35rem' }
-const mInputSt = { width: '100%', background: 'rgba(255,255,255,.05)', border: '1px solid rgba(90,46,166,.3)', borderRadius: 6, padding: '0.65rem 0.85rem', color: '#1a0a2e', fontFamily: "'Poppins',sans-serif", fontSize: '0.88rem', outline: 'none', boxSizing: 'border-box' }
+const mInputSt = { width: '100%', background: 'rgba(255,255,255,.07)', border: '1px solid rgba(90,46,166,.4)', borderRadius: 6, padding: '0.65rem 0.85rem', color: '#fff', fontFamily: "'Poppins',sans-serif", fontSize: '0.88rem', outline: 'none', boxSizing: 'border-box' }
