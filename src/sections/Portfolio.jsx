@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
-import { getPortfolio } from '../admin/portfolioService'
 
-/* ── Dados de fallback (usados só se o admin nunca salvou nada) ── */
+const API = import.meta.env.VITE_API_URL || '/api'
+
+/* ── Dados de fallback (exibidos enquanto carrega ou se API falhar) ── */
 const FALLBACK = {
   sites: [
     {
@@ -112,31 +113,22 @@ const gradients = [
   'linear-gradient(135deg, #2d0d5e 0%, #1a0533 100%)',
 ]
 
-const DATA_VERSION = 'v4' /* deve ser igual ao portfolioService.js */
-
-/* Lê dados do localStorage (admin) com fallback nos dados internos */
-function loadPortData() {
+/* Busca projetos da API (Supabase) */
+async function fetchPortData() {
   try {
-    /* Se versão divergiu, ignora localStorage e usa FALLBACK atualizado */
-    if (localStorage.getItem('pulsari_portfolio_version') !== DATA_VERSION) {
-      return FALLBACK
-    }
-    const saved = localStorage.getItem('pulsari_portfolio')
-    if (saved) {
-      const parsed = JSON.parse(saved)
-      return {
-        sites:     Array.isArray(parsed.sites)     ? parsed.sites     : FALLBACK.sites,
-        landing:   Array.isArray(parsed.landing)   ? parsed.landing   : FALLBACK.landing,
-        ecommerce: Array.isArray(parsed.ecommerce) ? parsed.ecommerce : FALLBACK.ecommerce,
-        sistemas:  Array.isArray(parsed.sistemas)  ? parsed.sistemas  : FALLBACK.sistemas,
-      }
-    }
-  } catch {}
-  return FALLBACK
+    const res = await fetch(`${API}/portfolio`)
+    if (!res.ok) throw new Error('falha')
+    const data = await res.json()
+    /* Se todas as categorias estiverem vazias, usa FALLBACK */
+    const total = Object.values(data).reduce((s, arr) => s + (arr?.length || 0), 0)
+    return total > 0 ? data : FALLBACK
+  } catch {
+    return FALLBACK
+  }
 }
 
 export default function Portfolio() {
-  const [portData,    setPortData]   = useState(loadPortData)
+  const [portData,    setPortData]   = useState(FALLBACK)
   const [activeCat,   setActiveCat]  = useState(null)
   const [activeCard,  setActiveCard] = useState(0)
   const [expanded,    setExpanded]   = useState(null)
@@ -144,9 +136,14 @@ export default function Portfolio() {
   const [imgError,    setImgError]   = useState(false)
   const imgRef = useRef(null)
 
-  /* Atualiza dados quando a aba volta ao foco (usuário saiu do admin e voltou) */
+  /* Carrega do Supabase ao montar */
   useEffect(() => {
-    const onFocus = () => setPortData(loadPortData())
+    fetchPortData().then(setPortData)
+  }, [])
+
+  /* Recarrega quando janela volta ao foco (admin → landing) */
+  useEffect(() => {
+    const onFocus = () => fetchPortData().then(setPortData)
     window.addEventListener('focus', onFocus)
     return () => window.removeEventListener('focus', onFocus)
   }, [])
