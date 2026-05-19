@@ -120,7 +120,7 @@ export default function AdminDashboard() {
           {/* 🌙 Dark/Light mode */}
           <button onClick={() => setDarkMode(v => !v)} title={darkMode ? 'Modo claro' : 'Modo escuro'} style={{
             background: darkMode ? 'rgba(255,255,255,.08)' : 'rgba(90,46,166,.1)',
-            border: `1px solid ${border}`, borderRadius: 6,
+            border: `1px solid ${t.border}`, borderRadius: 6,
             padding: '0.4rem 0.7rem', cursor: 'pointer', fontSize: '1rem',
             transition: 'all .2s', display: 'flex', alignItems: 'center',
           }}>
