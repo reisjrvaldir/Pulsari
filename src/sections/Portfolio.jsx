@@ -1,23 +1,25 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
+import { getPortfolio } from '../admin/portfolioService'
 
-const portData = {
+/* ── Dados de fallback (usados só se o admin nunca salvou nada) ── */
+const FALLBACK = {
   sites: [
     {
-      nome: 'Studio Arquitetura Belém',
+      id: 'f1', nome: 'Studio Arquitetura Belém',
       desc: 'Presença institucional que posicionou o escritório como referência premium no Pará.',
       tags: ['React', 'GSAP', 'Contentful'],
       context: 'O cliente precisava sair de um site genérico e ocupar um posicionamento de mercado premium. Desenvolvemos uma identidade visual forte, carregamento ultra-rápido e integração com CMS para gestão autônoma do portfólio de projetos.',
       link: '#',
     },
     {
-      nome: 'Clínica Derma Norte',
+      id: 'f2', nome: 'Clínica Derma Norte',
       desc: 'Site que reduziu o tempo de agendamento e aumentou a taxa de conversão em 3x.',
       tags: ['Next.js', 'Calendly', 'SEO'],
       context: 'A clínica perdia pacientes por dificuldade no agendamento online. Integramos um sistema de booking em tempo real, otimizamos o SEO local e criamos páginas de serviço que guiam o paciente até a marcação de consulta.',
       link: '#',
     },
     {
-      nome: 'Construtora Horizonte',
+      id: 'f3', nome: 'Construtora Horizonte',
       desc: 'Plataforma imersiva com mapa interativo e visualização 3D dos empreendimentos.',
       tags: ['React', 'Three.js', 'Mapbox'],
       context: 'Construtoras competem com grandes portais de imóveis. Criamos um diferencial competitivo com tour virtual 3D dos empreendimentos e mapa interativo com filtros avançados — diretamente no site próprio da empresa.',
@@ -26,21 +28,21 @@ const portData = {
   ],
   landing: [
     {
-      nome: 'Lançamento Orion',
+      id: 'f4', nome: 'Lançamento Orion',
       desc: 'Landing de produto com funil otimizado e taxa de conversão de 8.4%.',
       tags: ['React', 'GSAP', 'RD Station'],
       context: 'Criado para um lançamento com janela de 7 dias, o projeto exigiu velocidade de desenvolvimento sem abrir mão da performance. Integração completa com RD Station para nutrição automática dos leads captados.',
       link: '#',
     },
     {
-      nome: 'Curso Marketing Digital',
+      id: 'f5', nome: 'Curso Marketing Digital',
       desc: 'Copy + design alinhados: 1.200 inscrições na primeira semana de tráfego pago.',
       tags: ['HTML', 'CSS', 'JS', 'Hotmart'],
       context: 'Trabalhamos junto ao copywriter do cliente para garantir que design e texto se potencializassem mutuamente. Integração com Hotmart e pixel de conversão configurado para rastrear cada etapa do funil.',
       link: '#',
     },
     {
-      nome: 'Clínica Estética Premium',
+      id: 'f6', nome: 'Clínica Estética Premium',
       desc: 'Página de captura com formulário inteligente e automação de resposta em 5 min.',
       tags: ['React', 'EmailJS'],
       context: 'O maior problema era o tempo de resposta ao lead. Implementamos automação que envia uma mensagem personalizada em menos de 5 minutos após o preenchimento do formulário, reduzindo drasticamente a desistência.',
@@ -49,14 +51,14 @@ const portData = {
   ],
   ecommerce: [
     {
-      nome: 'Moda Pernambucana',
+      id: 'f7', nome: 'Moda Pernambucana',
       desc: 'E-commerce que faturou R$ 180k no primeiro mês com foco em UX e checkout rápido.',
       tags: ['Next.js', 'Stripe', 'PostgreSQL'],
       context: 'Desenvolvemos um fluxo de compra com o menor número possível de cliques do carrinho ao pagamento. Checkout otimizado, relatórios em tempo real e painel administrativo completo para gestão do estoque.',
       link: '#',
     },
     {
-      nome: 'Suplementos Power',
+      id: 'f8', nome: 'Suplementos Power',
       desc: 'Plataforma de assinaturas com recorrência automatizada e área do cliente.',
       tags: ['React', 'Node.js', 'MongoDB'],
       context: 'O modelo de negócio exigia um sistema de assinatura robusto. Implementamos cobranças recorrentes, área do assinante com histórico de pedidos, e sistema de indicação com cupons dinâmicos.',
@@ -65,21 +67,21 @@ const portData = {
   ],
   sistemas: [
     {
-      nome: 'SaaS Gestão Imobiliária',
+      id: 'f9', nome: 'SaaS Gestão Imobiliária',
       desc: 'Plataforma B2B com 40+ imobiliárias ativas, contratos digitais e BI integrado.',
       tags: ['React', 'Node.js', 'PostgreSQL', 'Docker'],
       context: 'Sistema completo para gestão de imóveis, contratos e comissões. Desenvolvemos módulos de assinatura digital, relatórios de desempenho por corretor e dashboard executivo com métricas em tempo real.',
       link: '#',
     },
     {
-      nome: 'Plataforma EAD',
+      id: 'f10', nome: 'Plataforma EAD',
       desc: 'LMS com videoaulas em streaming, certificação automática e integração Stripe.',
       tags: ['Next.js', 'AWS S3', 'Stripe'],
       context: 'Criamos do zero uma plataforma de ensino completa: upload de vídeo com transcodificação automática, progresso de aluno por módulo, emissão de certificado em PDF e gestão financeira integrada.',
       link: '#',
     },
     {
-      nome: 'App de Logística',
+      id: 'f11', nome: 'App de Logística',
       desc: 'Rastreamento em tempo real com Socket.io para frota de 200+ veículos.',
       tags: ['React', 'Socket.io', 'Maps API'],
       context: 'O cliente gerencia uma frota distribuída e precisava de visibilidade em tempo real. Desenvolvemos um painel com atualização por WebSocket, histórico de rotas, alertas automáticos e API para integração com ERPs.',
@@ -122,14 +124,52 @@ const gradients = [
   'linear-gradient(135deg, #2d0d5e 0%, #1a0533 100%)',
 ]
 
+/* Lê dados do localStorage (admin) com fallback nos dados internos */
+function loadPortData() {
+  try {
+    const saved = localStorage.getItem('pulsari_portfolio')
+    if (saved) {
+      const parsed = JSON.parse(saved)
+      /* mescla: garante que cada categoria exista */
+      return {
+        sites:     parsed.sites     || FALLBACK.sites,
+        landing:   parsed.landing   || FALLBACK.landing,
+        ecommerce: parsed.ecommerce || FALLBACK.ecommerce,
+        sistemas:  parsed.sistemas  || FALLBACK.sistemas,
+      }
+    }
+  } catch {}
+  return FALLBACK
+}
+
 export default function Portfolio() {
-  const [activeCat, setActiveCat]   = useState(null)
-  const [activeCard, setActiveCard] = useState(0)
-  const [expanded, setExpanded]     = useState(null)
-  const [imgOffset, setImgOffset]   = useState({ x: 0, y: 0 })
+  const [portData,    setPortData]   = useState(loadPortData)
+  const [activeCat,   setActiveCat]  = useState(null)
+  const [activeCard,  setActiveCard] = useState(0)
+  const [expanded,    setExpanded]   = useState(null)
+  const [imgOffset,   setImgOffset]  = useState({ x: 0, y: 0 })
   const imgRef = useRef(null)
 
-  const projects = activeCat ? portData[activeCat] : []
+  /* Atualiza dados quando a aba volta ao foco (usuário saiu do admin e voltou) */
+  useEffect(() => {
+    const onFocus = () => setPortData(loadPortData())
+    window.addEventListener('focus', onFocus)
+    return () => window.removeEventListener('focus', onFocus)
+  }, [])
+
+  /* Navegação por teclado ← → quando portfólio está aberto */
+  useEffect(() => {
+    if (!activeCat) return
+    const onKey = e => {
+      if (e.key === 'ArrowLeft')  { goPrev(); }
+      if (e.key === 'ArrowRight') { goNext(); }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeCat, projects.length])
+
+  const projects = activeCat ? (portData[activeCat] || []) : []
 
   const handleImgMove = e => {
     const rect = imgRef.current?.getBoundingClientRect()
@@ -139,19 +179,22 @@ export default function Portfolio() {
     setImgOffset({ x, y })
   }
 
-  const selectCat = cat => {
-    setActiveCat(cat)
-    setActiveCard(0)
-    setExpanded(null)
-  }
+  const selectCat = cat => { setActiveCat(cat); setActiveCard(0); setExpanded(null) }
+  const goBack    = ()  => { setActiveCat(null); setActiveCard(0); setExpanded(null) }
 
-  const goBack = () => {
-    setActiveCat(null)
-    setActiveCard(0)
+  const goPrev = () => {
+    setActiveCard(i => (i - 1 + projects.length) % projects.length)
     setExpanded(null)
+    setImgOffset({ x: 0, y: 0 })
+  }
+  const goNext = () => {
+    setActiveCard(i => (i + 1) % projects.length)
+    setExpanded(null)
+    setImgOffset({ x: 0, y: 0 })
   }
 
   const proj = projects[activeCard]
+  const total = projects.length
 
   return (
     <section id="portfolio" style={{ padding: '4rem 5%', position: 'relative' }}>
@@ -185,6 +228,7 @@ export default function Portfolio() {
                 <button key={cat} className="btn" onClick={() => selectCat(cat)}
                   style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   {catIcons[cat]}{catLabels[cat]}
+                  <span style={{ opacity: .55, fontSize: '0.75em' }}>({(portData[cat] || []).length})</span>
                 </button>
               ))}
             </div>
@@ -210,8 +254,7 @@ export default function Portfolio() {
                 background: 'none', border: 'none', color: 'rgba(237,233,255,0.72)',
                 fontFamily: 'var(--font2)', fontSize: '0.8rem',
                 letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'none',
-                marginBottom: '1.5rem', textAlign: 'left',
-                transition: 'color .3s',
+                marginBottom: '1.5rem', textAlign: 'left', transition: 'color .3s',
               }}
               onMouseEnter={e => e.target.style.color = 'var(--w)'}
               onMouseLeave={e => e.target.style.color = 'var(--g)'}
@@ -239,9 +282,12 @@ export default function Portfolio() {
                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                       {catIcons[cat]}{catLabels[cat]}
                     </span>
-                    {activeCat === cat && (
-                      <span style={{ transition: 'transform .3s', transform: 'translateX(4px)' }}>→</span>
-                    )}
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <span style={{ opacity: .5, fontSize: '0.75em' }}>({(portData[cat] || []).length})</span>
+                      {activeCat === cat && (
+                        <span style={{ transition: 'transform .3s', transform: 'translateX(4px)' }}>→</span>
+                      )}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -252,18 +298,60 @@ export default function Portfolio() {
               padding: 'clamp(1.5rem, 3vw, 3rem) 0 clamp(1.5rem, 3vw, 3rem) clamp(1rem, 3%, 50px)',
               overflowY: 'auto', maxHeight: 'calc(100vh - 80px)',
             }}>
-              <p style={{
-                fontFamily: 'var(--font2)', fontSize: '0.72rem', fontWeight: 600,
-                letterSpacing: '0.3em', color: 'var(--p3)', textTransform: 'uppercase',
+
+              {/* ── Cabeçalho com setas ── */}
+              <div style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 marginBottom: '1.5rem',
-              }}>// {catLabels[activeCat]}</p>
+              }}>
+                <p style={{
+                  fontFamily: 'var(--font2)', fontSize: '0.72rem', fontWeight: 600,
+                  letterSpacing: '0.3em', color: 'var(--p3)', textTransform: 'uppercase',
+                  margin: 0,
+                }}>// {catLabels[activeCat]}</p>
+
+                {/* Setas de navegação */}
+                {total > 1 && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span style={{ fontFamily: 'var(--font2)', fontSize: '0.72rem', color: 'var(--w)', opacity: .5 }}>
+                      {activeCard + 1} / {total}
+                    </span>
+                    <button onClick={goPrev} className="nav-arrow" title="Anterior" style={{
+                      width: 34, height: 34, borderRadius: 6,
+                      background: 'rgba(255,255,255,.06)', border: '1px solid var(--border)',
+                      color: 'var(--w)', cursor: 'none', display: 'flex', alignItems: 'center',
+                      justifyContent: 'center', transition: 'all .2s', flexShrink: 0,
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.background='rgba(90,46,166,.3)'; e.currentTarget.style.borderColor='var(--p)' }}
+                    onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,.06)'; e.currentTarget.style.borderColor='var(--border)' }}
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="15 18 9 12 15 6"/>
+                      </svg>
+                    </button>
+                    <button onClick={goNext} className="nav-arrow" title="Próximo" style={{
+                      width: 34, height: 34, borderRadius: 6,
+                      background: 'rgba(255,255,255,.06)', border: '1px solid var(--border)',
+                      color: 'var(--w)', cursor: 'none', display: 'flex', alignItems: 'center',
+                      justifyContent: 'center', transition: 'all .2s', flexShrink: 0,
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.background='rgba(90,46,166,.3)'; e.currentTarget.style.borderColor='var(--p)' }}
+                    onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,.06)'; e.currentTarget.style.borderColor='var(--border)' }}
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="9 18 15 12 9 6"/>
+                      </svg>
+                    </button>
+                  </div>
+                )}
+              </div>
 
               {proj && (
-                <div style={{
+                <div key={proj.id || activeCard} style={{
                   border: '1px solid var(--border)', borderRadius: 5,
                   background: 'rgba(6,5,26,.8)', backdropFilter: 'blur(10px)',
                   overflow: 'hidden',
-                  animation: 'slideR .45s cubic-bezier(0.22,1,0.36,1)',
+                  animation: 'slideR .4s cubic-bezier(0.22,1,0.36,1)',
                 }}>
                   {/* Área de imagem com parallax */}
                   <div ref={imgRef} onMouseMove={handleImgMove}
@@ -271,7 +359,6 @@ export default function Portfolio() {
                     style={{ height: 240, position: 'relative', overflow: 'hidden', cursor: proj.linkSistema ? 'pointer' : 'none' }}
                     onClick={() => proj.linkSistema && window.open(proj.linkSistema, '_blank')}
                   >
-                    {/* Imagem real ou gradiente fallback */}
                     {proj.imagem ? (
                       <img src={proj.imagem} alt={proj.nome} style={{
                         position: 'absolute', inset: '-20px', width: 'calc(100% + 40px)', height: 'calc(100% + 40px)',
@@ -287,10 +374,11 @@ export default function Portfolio() {
                         transition: 'transform .1s ease',
                       }} />
                     )}
-                    {/* Grid decorativo (só sem imagem) */}
                     {!proj.imagem && (
                       <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)', backgroundSize: '40px 40px', opacity: 0.4 }} />
                     )}
+
+
                     {/* Hover overlay */}
                     <div className="img-overlay" style={{
                       position: 'absolute', inset: 0,
@@ -311,6 +399,7 @@ export default function Portfolio() {
                         + Informações
                       </button>
                     </div>
+
                     {/* Tag categoria */}
                     <div style={{
                       position: 'absolute', bottom: 12, left: 16,
@@ -331,13 +420,12 @@ export default function Portfolio() {
                       color: 'var(--w)', lineHeight: 1.6, marginBottom: '1rem',
                     }}>{proj.desc}</p>
                     <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                      {proj.tags.map(t => (
-                        <span key={t} style={{
+                      {(Array.isArray(proj.tags) ? proj.tags : []).map(tag => (
+                        <span key={tag} style={{
                           padding: '0.2rem 0.6rem', borderRadius: 2,
                           border: '1px solid var(--border)', color: 'var(--p3)',
-                          fontFamily: 'var(--font2)', fontSize: '0.72rem',
-                          letterSpacing: '0.08em',
-                        }}>{t}</span>
+                          fontFamily: 'var(--font2)', fontSize: '0.72rem', letterSpacing: '0.08em',
+                        }}>{tag}</span>
                       ))}
                     </div>
                   </div>
@@ -353,28 +441,72 @@ export default function Portfolio() {
                         fontFamily: 'var(--font2)', fontSize: '0.9rem',
                         color: 'var(--w)', lineHeight: 1.8, marginBottom: '1rem',
                       }}>{proj.context}</p>
-                      <a href={proj.link} className="btn btn-primary" style={{ fontSize: '0.72rem' }}>
-                        Visitar projeto ↗
-                      </a>
+                      {proj.link && proj.link !== '#' && (
+                        <a href={proj.link} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ fontSize: '0.72rem' }}>
+                          Visitar projeto ↗
+                        </a>
+                      )}
                     </div>
                   )}
                 </div>
               )}
 
-              {/* Dots de navegação */}
-              {projects.length > 1 && (
+              {/* ── Navegação: setas grandes + dots ── */}
+              {total > 1 && (
                 <div style={{
-                  display: 'flex', justifyContent: 'center',
-                  gap: '0.5rem', marginTop: '1.5rem',
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                  marginTop: '1.2rem', gap: '0.75rem',
                 }}>
-                  {projects.map((_, i) => (
-                    <button key={i} onClick={() => { setActiveCard(i); setExpanded(null) }} style={{
-                      width: i === activeCard ? 20 : 8, height: 8,
-                      borderRadius: 4, border: 'none',
-                      background: i === activeCard ? 'var(--p3)' : 'var(--border)',
-                      cursor: 'none', transition: 'all .3s',
-                    }} />
-                  ))}
+
+                  {/* Botão ANTERIOR */}
+                  <button onClick={goPrev} style={{
+                    display: 'flex', alignItems: 'center', gap: '0.5rem',
+                    background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.12)',
+                    borderRadius: 8, padding: '0.6rem 1.1rem',
+                    color: 'rgba(255,255,255,.7)', fontFamily: "'Poppins',sans-serif",
+                    fontWeight: 600, fontSize: '0.82rem', cursor: 'none',
+                    transition: 'all .2s', letterSpacing: '0.04em',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background='rgba(90,46,166,.35)'; e.currentTarget.style.borderColor='var(--p)'; e.currentTarget.style.color='#fff' }}
+                  onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,.05)'; e.currentTarget.style.borderColor='rgba(255,255,255,.12)'; e.currentTarget.style.color='rgba(255,255,255,.7)' }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+                    </svg>
+                    Anterior
+                  </button>
+
+                  {/* Dots centrais */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    {projects.map((_, i) => (
+                      <button key={i} onClick={() => { setActiveCard(i); setExpanded(null) }} style={{
+                        width: i === activeCard ? 22 : 8, height: 8,
+                        borderRadius: 4, border: 'none',
+                        background: i === activeCard ? 'var(--p3)' : 'rgba(255,255,255,.2)',
+                        cursor: 'none', transition: 'all .3s', flexShrink: 0,
+                      }} />
+                    ))}
+                  </div>
+
+                  {/* Botão PRÓXIMO */}
+                  <button onClick={goNext} style={{
+                    display: 'flex', alignItems: 'center', gap: '0.5rem',
+                    background: 'linear-gradient(135deg, rgba(90,46,166,.4), rgba(45,107,255,.4))',
+                    border: '1px solid rgba(90,46,166,.6)',
+                    borderRadius: 8, padding: '0.6rem 1.1rem',
+                    color: '#fff', fontFamily: "'Poppins',sans-serif",
+                    fontWeight: 600, fontSize: '0.82rem', cursor: 'none',
+                    transition: 'all .2s', letterSpacing: '0.04em',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background='linear-gradient(135deg,#5A2EA6,#2D6BFF)'; e.currentTarget.style.borderColor='#5A2EA6' }}
+                  onMouseLeave={e => { e.currentTarget.style.background='linear-gradient(135deg, rgba(90,46,166,.4), rgba(45,107,255,.4))'; e.currentTarget.style.borderColor='rgba(90,46,166,.6)' }}
+                  >
+                    Próximo
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                  </button>
+
                 </div>
               )}
             </div>
@@ -383,7 +515,7 @@ export default function Portfolio() {
       </div>
 
       <style>{`
-        @keyframes slideR { from { opacity:0; transform: translateX(50px); } to { opacity:1; transform: translateX(0); } }
+        @keyframes slideR { from { opacity:0; transform: translateX(30px); } to { opacity:1; transform: translateX(0); } }
         @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
         @media (max-width: 1024px) {
           .port-grid { grid-template-columns: 1fr !important; }

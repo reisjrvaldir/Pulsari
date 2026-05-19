@@ -168,14 +168,15 @@ export default function AdminDashboard() {
         {/* ── Tabs de categoria ── */}
         <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
           {Object.entries(CATS).map(([key, { label, color }]) => (
-            <button key={key} onClick={() => setActiveCat(key)} style={{
+            <button key={key} onClick={() => setActiveCat(key)} translate="no" style={{
               padding: '0.5rem 1.2rem', borderRadius: 6, border: 'none', cursor: 'pointer',
               fontFamily: 'inherit', fontWeight: 700, fontSize: '0.8rem', letterSpacing: '0.06em',
               background: activeCat === key ? color : t.catBtn,
               color: activeCat === key ? '#fff' : t.catBtnText,
               transition: 'all .2s',
             }}>
-              {label} <span style={{ opacity: .7 }}>({(data[key] || []).length})</span>
+              <span translate="no">{label}</span>{' '}
+              <span translate="no" style={{ opacity: .7 }}>({(data[key] || []).length})</span>
             </button>
           ))}
         </div>
