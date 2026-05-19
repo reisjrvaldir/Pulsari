@@ -217,8 +217,8 @@ export default function AdminDashboard() {
                 <div style={{ fontWeight: 700, fontSize: '1rem', marginBottom: '0.25rem', color: t.fg }}>{p.nome}</div>
                 <div style={{ color: t.fgMuted, fontSize: '0.82rem', fontFamily: "'Poppins',sans-serif", marginBottom: '0.5rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.desc}</div>
                 <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
-                  {p.tags?.map(t => (
-                    <span key={t} style={{ background: 'rgba(90,46,166,.2)', border: '1px solid rgba(90,46,166,.3)', borderRadius: 4, padding: '0.15rem 0.5rem', fontSize: '0.68rem', color: '#a855f7', fontFamily: "'Poppins',sans-serif" }}>{t}</span>
+                  {(Array.isArray(p.tags) ? p.tags : []).map(tag => (
+                    <span key={tag} style={{ background: 'rgba(90,46,166,.2)', border: '1px solid rgba(90,46,166,.3)', borderRadius: 4, padding: '0.15rem 0.5rem', fontSize: '0.68rem', color: '#a855f7', fontFamily: "'Poppins',sans-serif" }}>{tag}</span>
                   ))}
                 </div>
               </div>
