@@ -48,6 +48,13 @@ const FALLBACK = {
       context: 'O maior problema era o tempo de resposta ao lead. Implementamos automação que envia uma mensagem personalizada em menos de 5 minutos após o preenchimento do formulário, reduzindo drasticamente a desistência.',
       link: '#',
     },
+    {
+      id: 'f12', nome: 'ALPHA LED',
+      desc: 'Construção de site institucional para empresa do setor de iluminação LED.',
+      tags: ['WordPress', 'HTML', 'CSS', 'SQL'],
+      context: 'Site institucional completo para a Alpha LED, com catálogo de produtos, páginas de serviço e integração com formulário de orçamento.',
+      link: '#',
+    },
   ],
   ecommerce: [
     {
@@ -299,52 +306,12 @@ export default function Portfolio() {
               overflowY: 'auto', maxHeight: 'calc(100vh - 80px)',
             }}>
 
-              {/* ── Cabeçalho com setas ── */}
-              <div style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              {/* ── Cabeçalho categoria ── */}
+              <p style={{
+                fontFamily: 'var(--font2)', fontSize: '0.72rem', fontWeight: 600,
+                letterSpacing: '0.3em', color: 'var(--p3)', textTransform: 'uppercase',
                 marginBottom: '1.5rem',
-              }}>
-                <p style={{
-                  fontFamily: 'var(--font2)', fontSize: '0.72rem', fontWeight: 600,
-                  letterSpacing: '0.3em', color: 'var(--p3)', textTransform: 'uppercase',
-                  margin: 0,
-                }}>// {catLabels[activeCat]}</p>
-
-                {/* Setas de navegação */}
-                {total > 1 && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ fontFamily: 'var(--font2)', fontSize: '0.72rem', color: 'var(--w)', opacity: .5 }}>
-                      {activeCard + 1} / {total}
-                    </span>
-                    <button onClick={goPrev} className="nav-arrow" title="Anterior" style={{
-                      width: 34, height: 34, borderRadius: 6,
-                      background: 'rgba(255,255,255,.06)', border: '1px solid var(--border)',
-                      color: 'var(--w)', cursor: 'none', display: 'flex', alignItems: 'center',
-                      justifyContent: 'center', transition: 'all .2s', flexShrink: 0,
-                    }}
-                    onMouseEnter={e => { e.currentTarget.style.background='rgba(90,46,166,.3)'; e.currentTarget.style.borderColor='var(--p)' }}
-                    onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,.06)'; e.currentTarget.style.borderColor='var(--border)' }}
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="15 18 9 12 15 6"/>
-                      </svg>
-                    </button>
-                    <button onClick={goNext} className="nav-arrow" title="Próximo" style={{
-                      width: 34, height: 34, borderRadius: 6,
-                      background: 'rgba(255,255,255,.06)', border: '1px solid var(--border)',
-                      color: 'var(--w)', cursor: 'none', display: 'flex', alignItems: 'center',
-                      justifyContent: 'center', transition: 'all .2s', flexShrink: 0,
-                    }}
-                    onMouseEnter={e => { e.currentTarget.style.background='rgba(90,46,166,.3)'; e.currentTarget.style.borderColor='var(--p)' }}
-                    onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,.06)'; e.currentTarget.style.borderColor='var(--border)' }}
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="9 18 15 12 9 6"/>
-                      </svg>
-                    </button>
-                  </div>
-                )}
-              </div>
+              }}>// {catLabels[activeCat]}</p>
 
               {proj && (
                 <div key={proj.id || activeCard} style={{
@@ -451,32 +418,14 @@ export default function Portfolio() {
                 </div>
               )}
 
-              {/* ── Navegação: setas grandes + dots ── */}
+              {/* ── Navegação: dots + Próximo ── */}
               {total > 1 && (
                 <div style={{
-                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                  marginTop: '1.2rem', gap: '0.75rem',
+                  display: 'flex', justifyContent: 'center', alignItems: 'center',
+                  marginTop: '1.2rem', gap: '1rem',
                 }}>
 
-                  {/* Botão ANTERIOR */}
-                  <button onClick={goPrev} style={{
-                    display: 'flex', alignItems: 'center', gap: '0.5rem',
-                    background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.12)',
-                    borderRadius: 8, padding: '0.6rem 1.1rem',
-                    color: 'rgba(255,255,255,.7)', fontFamily: "'Poppins',sans-serif",
-                    fontWeight: 600, fontSize: '0.82rem', cursor: 'none',
-                    transition: 'all .2s', letterSpacing: '0.04em',
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.background='rgba(90,46,166,.35)'; e.currentTarget.style.borderColor='var(--p)'; e.currentTarget.style.color='#fff' }}
-                  onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,.05)'; e.currentTarget.style.borderColor='rgba(255,255,255,.12)'; e.currentTarget.style.color='rgba(255,255,255,.7)' }}
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
-                    </svg>
-                    Anterior
-                  </button>
-
-                  {/* Dots centrais */}
+                  {/* Dots */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                     {projects.map((_, i) => (
                       <button key={i} onClick={() => { setActiveCard(i); setExpanded(null) }} style={{
