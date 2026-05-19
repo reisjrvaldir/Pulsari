@@ -157,18 +157,6 @@ export default function Portfolio() {
     return () => window.removeEventListener('focus', onFocus)
   }, [])
 
-  /* Navegação por teclado ← → quando portfólio está aberto */
-  useEffect(() => {
-    if (!activeCat) return
-    const onKey = e => {
-      if (e.key === 'ArrowLeft')  { goPrev(); }
-      if (e.key === 'ArrowRight') { goNext(); }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeCat, projects.length])
-
   const projects = activeCat ? (portData[activeCat] || []) : []
 
   const handleImgMove = e => {
@@ -192,6 +180,18 @@ export default function Portfolio() {
     setExpanded(null)
     setImgOffset({ x: 0, y: 0 })
   }
+
+  /* Navegação por teclado ← → quando portfólio está aberto */
+  useEffect(() => {
+    if (!activeCat) return
+    const onKey = e => {
+      if (e.key === 'ArrowLeft')  { goPrev(); }
+      if (e.key === 'ArrowRight') { goNext(); }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeCat, projects.length])
 
   const proj = projects[activeCard]
   const total = projects.length
