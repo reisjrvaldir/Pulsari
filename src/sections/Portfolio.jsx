@@ -105,7 +105,13 @@ const catIcons = {
   ),
 }
 
-const catLabels = { sites: 'Sites', landing: 'Landpages', ecommerce: 'E-commerce', sistemas: 'Sistemas' }
+/* Categorias padrão (fallback enquanto carrega) */
+const FALLBACK_CATS = [
+  { key: 'sites',     label: 'Sites',       color: '#5A2EA6' },
+  { key: 'landing',   label: 'Landpages',   color: '#FF2D8D' },
+  { key: 'ecommerce', label: 'E-commerce',  color: '#2D6BFF' },
+  { key: 'sistemas',  label: 'Sistemas',    color: '#10b981' },
+]
 
 const gradients = [
   'linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%)',
@@ -113,13 +119,22 @@ const gradients = [
   'linear-gradient(135deg, #2d0d5e 0%, #1a0533 100%)',
 ]
 
+/* Busca categorias da API */
+async function fetchCategories() {
+  try {
+    const res = await fetch(`${API}/categories`)
+    if (!res.ok) throw new Error('falha')
+    const data = await res.json()
+    return data.length > 0 ? data : FALLBACK_CATS
+  } catch { return FALLBACK_CATS }
+}
+
 /* Busca projetos da API (Supabase) */
 async function fetchPortData() {
   try {
     const res = await fetch(`${API}/portfolio`)
     if (!res.ok) throw new Error('falha')
     const data = await res.json()
-    /* Se todas as categorias estiverem vazias, usa FALLBACK */
     const total = Object.values(data).reduce((s, arr) => s + (arr?.length || 0), 0)
     return total > 0 ? data : FALLBACK
   } catch {
@@ -129,6 +144,7 @@ async function fetchPortData() {
 
 export default function Portfolio() {
   const [portData,    setPortData]   = useState(FALLBACK)
+  const [categories,  setCategories] = useState(FALLBACK_CATS)
   const [activeCat,   setActiveCat]  = useState(null)
   const [activeCard,  setActiveCard] = useState(0)
   const [expanded,    setExpanded]   = useState(null)
@@ -136,14 +152,21 @@ export default function Portfolio() {
   const [imgError,    setImgError]   = useState(false)
   const imgRef = useRef(null)
 
-  /* Carrega do Supabase ao montar */
+  /* Carrega categorias + projetos do Supabase */
   useEffect(() => {
-    fetchPortData().then(setPortData)
+    Promise.all([fetchCategories(), fetchPortData()]).then(([cats, data]) => {
+      setCategories(cats)
+      setPortData(data)
+      if (cats.length > 0 && !activeCat) setActiveCat(null)
+    })
   }, [])
 
   /* Recarrega quando janela volta ao foco (admin → landing) */
   useEffect(() => {
-    const onFocus = () => fetchPortData().then(setPortData)
+    const onFocus = () => Promise.all([fetchCategories(), fetchPortData()]).then(([cats, data]) => {
+      setCategories(cats)
+      setPortData(data)
+    })
     window.addEventListener('focus', onFocus)
     return () => window.removeEventListener('focus', onFocus)
   }, [])
@@ -217,11 +240,12 @@ export default function Portfolio() {
             </p>
 
             <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-              {Object.keys(portData).map(cat => (
-                <button key={cat} className="btn" onClick={() => selectCat(cat)}
+              {categories.map(({ key, label, color }) => (
+                <button key={key} className="btn" onClick={() => selectCat(key)}
                   style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  {catIcons[cat]}{catLabels[cat]}
-                  <span style={{ opacity: .55, fontSize: '0.75em' }}>({(portData[cat] || []).length})</span>
+                  {catIcons[key] || catIcons.sistemas}
+                  {label}
+                  <span style={{ opacity: .55, fontSize: '0.75em' }}>({(portData[key] || []).length})</span>
                 </button>
               ))}
             </div>
@@ -262,24 +286,22 @@ export default function Portfolio() {
               }}>PORT<br />FÓLIO</h2>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                {Object.keys(portData).map(cat => (
-                  <button key={cat} onClick={() => selectCat(cat)}
+                {categories.map(({ key, label, color }) => (
+                  <button key={key} onClick={() => selectCat(key)}
                     className="btn"
                     style={{
                       display: 'flex', alignItems: 'center', gap: '0.5rem',
-                      background: activeCat === cat ? 'var(--p2)' : 'transparent',
-                      borderColor: activeCat === cat ? 'var(--p)' : 'var(--border)',
-                      color: activeCat === cat ? '#fff' : 'var(--w)',
+                      background: activeCat === key ? color + '33' : 'transparent',
+                      borderColor: activeCat === key ? color : 'var(--border)',
+                      color: activeCat === key ? '#fff' : 'var(--w)',
                       justifyContent: 'space-between',
                     }}>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      {catIcons[cat]}{catLabels[cat]}
+                      {catIcons[key] || catIcons.sistemas}{label}
                     </span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                      <span style={{ opacity: .5, fontSize: '0.75em' }}>({(portData[cat] || []).length})</span>
-                      {activeCat === cat && (
-                        <span style={{ transition: 'transform .3s', transform: 'translateX(4px)' }}>→</span>
-                      )}
+                      <span style={{ opacity: .5, fontSize: '0.75em' }}>({(portData[key] || []).length})</span>
+                      {activeCat === key && <span style={{ transform: 'translateX(4px)' }}>→</span>}
                     </span>
                   </button>
                 ))}
@@ -297,7 +319,7 @@ export default function Portfolio() {
                 fontFamily: 'var(--font2)', fontSize: '0.72rem', fontWeight: 600,
                 letterSpacing: '0.3em', color: 'var(--p3)', textTransform: 'uppercase',
                 marginBottom: '1.5rem',
-              }}>// {catLabels[activeCat]}</p>
+              }}>// {categories.find(c => c.key === activeCat)?.label || activeCat}</p>
 
               {proj && (
                 <div key={proj.id || activeCard} style={{
@@ -354,7 +376,7 @@ export default function Portfolio() {
                         borderRadius: 2, padding: '0.2rem 0.6rem',
                         fontFamily: 'var(--font2)', fontSize: '0.62rem',
                         letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--p3)',
-                      }}>{catLabels[activeCat]}</div>
+                      }}>{categories.find(c => c.key === activeCat)?.label || activeCat}</div>
 
                       <h3 style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '0.4rem', color: '#fff' }}>
                         {proj.nome}

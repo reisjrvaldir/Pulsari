@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { logout } from './auth'
-import { getPortfolio, addProject, updateProject, deleteProject, uploadImage, CATS } from './portfolioService'
+import { getPortfolio, addProject, updateProject, deleteProject, uploadImage } from './portfolioService'
+import { getCategories, createCategory, updateCategory, deleteCategory } from './categoriesService'
 import { getUnreadCount } from './messagesService'
 import AdminMessages from './AdminMessages'
+import AdminCategories from './AdminCategories'
 
 const EMPTY_FORM = { nome: '', desc: '', context: '', tags: '', link: '', imagem: '', linkSistema: '' }
 
@@ -19,9 +21,10 @@ export default function AdminDashboard() {
   const [tab,        setTab]        = useState('portfolio')
   const [unread,     setUnread]     = useState(0)
   const [darkMode,   setDarkMode]   = useState(true)
-  const [data,       setData]       = useState({ sites: [], landing: [], ecommerce: [], sistemas: [] })
+  const [data,       setData]       = useState({})
+  const [cats,       setCats]       = useState([])
   const [loading,    setLoading]    = useState(true)
-  const [activeCat,  setActiveCat]  = useState('sites')
+  const [activeCat,  setActiveCat]  = useState(null)
   const [modal,      setModal]      = useState(null)
   const [form,       setForm]       = useState(EMPTY_FORM)
   const [saving,     setSaving]     = useState(false)
@@ -30,14 +33,16 @@ export default function AdminDashboard() {
   const [error,      setError]      = useState(null)
   const [imgPreview, setImgPreview] = useState(null)
 
-  /* Carrega portfólio do Supabase */
+  /* Carrega categorias + projetos do Supabase */
   const loadData = async () => {
     setLoading(true)
     try {
-      const d = await getPortfolio()
-      setData(d)
+      const [categories, portfolio] = await Promise.all([getCategories(), getPortfolio()])
+      setCats(categories)
+      setData(portfolio)
+      if (!activeCat && categories.length > 0) setActiveCat(categories[0].key)
     } catch (e) {
-      setError('Erro ao carregar portfólio: ' + e.message)
+      setError('Erro ao carregar dados: ' + e.message)
     } finally {
       setLoading(false)
     }
@@ -158,8 +163,9 @@ export default function AdminDashboard() {
             PULSARI <span style={{ fontSize: '0.65rem', WebkitTextFillColor: t.fgMuted, background: 'none', letterSpacing: '0.2em' }}>ADMIN</span>
           </div>
           {[
-            { key: 'portfolio', label: 'Portfólio' },
-            { key: 'mensagens', label: 'Mensagens', badge: unread },
+            { key: 'portfolio',   label: 'Portfólio' },
+            { key: 'categorias',  label: 'Categorias' },
+            { key: 'mensagens',   label: 'Mensagens', badge: unread },
           ].map(tb => (
             <button key={tb.key} onClick={() => setTab(tb.key)} style={{
               background: 'none', border: 'none', cursor: 'pointer',
@@ -205,6 +211,15 @@ export default function AdminDashboard() {
       {/* ── Aba Mensagens ── */}
       {tab === 'mensagens' && <AdminMessages theme={t} />}
 
+      {/* ── Aba Categorias ── */}
+      {tab === 'categorias' && (
+        <AdminCategories
+          theme={t}
+          cats={cats}
+          onRefresh={loadData}
+        />
+      )}
+
       {/* ── Aba Portfólio ── */}
       {tab === 'portfolio' && (
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '2rem 1.5rem' }}>
@@ -215,9 +230,9 @@ export default function AdminDashboard() {
             </p>
           </div>
 
-          {/* Tabs de categoria */}
+          {/* Tabs de categoria (dinâmicas) */}
           <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
-            {Object.entries(CATS).map(([key, { label, color }]) => (
+            {cats.map(({ key, label, color }) => (
               <button key={key} onClick={() => setActiveCat(key)} translate="no" style={{
                 padding: '0.5rem 1.2rem', borderRadius: 6, border: 'none', cursor: 'pointer',
                 fontFamily: 'inherit', fontWeight: 700, fontSize: '0.8rem', letterSpacing: '0.06em',
@@ -229,13 +244,25 @@ export default function AdminDashboard() {
                 <span translate="no" style={{ opacity: .7 }}>({(data[key] || []).length})</span>
               </button>
             ))}
+            <button onClick={() => setTab('categorias')} style={{
+              padding: '0.5rem 1rem', borderRadius: 6, cursor: 'pointer',
+              background: 'none', border: `1px dashed ${t.border}`,
+              color: t.fgMuted, fontFamily: 'inherit', fontSize: '0.8rem',
+              transition: 'all .2s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor='#a855f7'; e.currentTarget.style.color='#a855f7' }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor=t.border; e.currentTarget.style.color=t.fgMuted }}
+            >+ Nova categoria</button>
           </div>
 
           {/* Barra de ações */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
             <span style={{ color: t.fgMuted, fontSize: '0.82rem', fontFamily: "'Poppins',sans-serif" }}>
               {loading ? 'Carregando...' : `${projects.length} projeto${projects.length !== 1 ? 's' : ''} em `}
-              {!loading && <strong style={{ color: CATS[activeCat].color }}>{CATS[activeCat].label}</strong>}
+              {!loading && activeCat && (() => {
+                const cat = cats.find(c => c.key === activeCat)
+                return cat ? <strong style={{ color: cat.color }}>{cat.label}</strong> : null
+              })()}
             </span>
             <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
               {saved && <span style={{ color: '#10b981', fontSize: '0.78rem', fontFamily: "'Poppins',sans-serif" }}>✓ Salvo</span>}
@@ -314,7 +341,10 @@ export default function AdminDashboard() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <h2 style={{ fontWeight: 800, fontSize: '1.1rem', color: t.fg }}>
                 {modal === 'add' ? '+ Novo projeto' : '✎ Editar projeto'}
-                <span style={{ marginLeft: '0.5rem', fontSize: '0.72rem', color: CATS[activeCat].color, letterSpacing: '0.1em' }}>{CATS[activeCat].label}</span>
+                {activeCat && (() => {
+                  const cat = cats.find(c => c.key === activeCat)
+                  return cat ? <span style={{ marginLeft: '0.5rem', fontSize: '0.72rem', color: cat.color, letterSpacing: '0.1em' }}>{cat.label}</span> : null
+                })()}
               </h2>
               <button onClick={closeModal} style={{ background: 'none', border: 'none', color: t.fgMuted, fontSize: '1.4rem', cursor: 'pointer' }}>×</button>
             </div>
