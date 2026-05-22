@@ -33,14 +33,39 @@ export default function AdminDashboard() {
   const [error,      setError]      = useState(null)
   const [imgPreview, setImgPreview] = useState(null)
 
+  const DEFAULT_CATS = [
+    { key: 'sites',     label: 'Sites',       color: '#5A2EA6' },
+    { key: 'landing',   label: 'Landpages',   color: '#FF2D8D' },
+    { key: 'ecommerce', label: 'E-commerce',  color: '#2D6BFF' },
+    { key: 'sistemas',  label: 'Sistemas',    color: '#10b981' },
+  ]
+
   /* Carrega categorias + projetos do Supabase */
   const loadData = async () => {
     setLoading(true)
+    setError(null)
     try {
-      const [categories, portfolio] = await Promise.all([getCategories(), getPortfolio()])
+      /* Carrega em paralelo, com fallback individual */
+      const [catsResult, portfolioResult] = await Promise.allSettled([
+        getCategories(),
+        getPortfolio(),
+      ])
+
+      const categories = catsResult.status === 'fulfilled' && catsResult.value.length > 0
+        ? catsResult.value
+        : DEFAULT_CATS
+
+      const portfolio = portfolioResult.status === 'fulfilled'
+        ? portfolioResult.value
+        : {}
+
       setCats(categories)
       setData(portfolio)
       if (!activeCat && categories.length > 0) setActiveCat(categories[0].key)
+
+      if (catsResult.status === 'rejected') {
+        setError('⚠️ Categorias usando padrão — execute supabase-categories-setup.sql no Supabase')
+      }
     } catch (e) {
       setError('Erro ao carregar dados: ' + e.message)
     } finally {
