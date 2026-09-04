@@ -12,14 +12,6 @@ dist
 dist-ssr
 *.local
 
-# Variáveis de ambiente — NUNCA subir para o git
-.env
-.env.local
-.env.*.local
-
-# Dados locais do servidor (serão substituídos pelo Supabase)
-server/data/
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -31,5 +23,4 @@ server/data/
 *.sln
 *.sw?
 
-# Build approval files
-*.approval.html
+.vercel
