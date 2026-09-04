@@ -1,111 +1,146 @@
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+/* Apenas subconjuntos latin / latin-ext (cobrem pt-BR por completo) para reduzir o payload de fontes */
+@import '@fontsource/raleway/latin-500.css';
+@import '@fontsource/raleway/latin-600.css';
+@import '@fontsource/raleway/latin-700.css';
+@import '@fontsource/raleway/latin-800.css';
+@import '@fontsource/raleway/latin-ext-500.css';
+@import '@fontsource/raleway/latin-ext-600.css';
+@import '@fontsource/raleway/latin-ext-700.css';
+@import '@fontsource/raleway/latin-ext-800.css';
+@import '@fontsource/montserrat/latin-400.css';
+@import '@fontsource/montserrat/latin-500.css';
+@import '@fontsource/montserrat/latin-600.css';
+@import '@fontsource/montserrat/latin-700.css';
+@import '@fontsource/montserrat/latin-ext-400.css';
+@import '@fontsource/montserrat/latin-ext-500.css';
+@import '@fontsource/montserrat/latin-ext-600.css';
+@import '@fontsource/montserrat/latin-ext-700.css';
+@import '@fontsource/instrument-serif/latin-400.css';
+@import '@fontsource/instrument-serif/latin-400-italic.css';
+@import '@fontsource/instrument-serif/latin-ext-400.css';
+@import '@fontsource/instrument-serif/latin-ext-400-italic.css';
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  html,
+  body {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+    font-feature-settings: 'ss01' on;
+  }
+
+  ::selection {
+    background: #8b5cf6;
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid #8b5cf6;
+    outline-offset: 3px;
+    border-radius: 4px;
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+@layer components {
+  .container-px {
+    @apply px-6 sm:px-8 lg:px-12;
   }
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
+  .section-pad {
+    @apply py-20 sm:py-28 lg:py-32;
+  }
+
+  .gradient-text {
+    background-image: linear-gradient(90deg, #ff2ba6 0%, #8b5cf6 52%, #3b82f6 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: pulse-line 8s ease-in-out infinite;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold tracking-wide transition-all duration-300 min-h-[44px];
+  }
+
+  .btn-gradient {
+    @apply btn text-white shadow-soft;
+    background-image: linear-gradient(90deg, #ff2ba6 0%, #8b5cf6 52%, #3b82f6 100%);
+    background-size: 160% 100%;
+    background-position: 0% 0%;
+  }
+
+  .btn-gradient:hover {
+    background-position: 100% 0%;
+    transform: translateY(-2px);
+  }
+
+  .btn-outline-light {
+    @apply btn border border-white/30 text-white transition-colors duration-300 hover:border-transparent hover:bg-white hover:text-plum;
+  }
+
+  .btn-outline-dark {
+    @apply btn border border-line text-ink hover:border-ink/40 hover:bg-ink/[0.03];
+  }
+
+  .card-surface {
+    @apply rounded-3xl border border-line bg-white shadow-card transition-all duration-300;
+  }
+
+  .num-tag {
+    @apply font-display text-4xl sm:text-5xl font-light tracking-tight text-ink/15;
+  }
+
+  /* Preenchimento em degradê no hover dos cards — sempre contrasta com o
+     ícone (que usa apenas duas das três cores da marca por vez). */
+  .hover-fill-gradient {
+    transition: background-image 0.35s ease, border-color 0.35s ease;
+  }
+  .hover-fill-gradient:hover {
+    background-image: linear-gradient(120deg, #ff2ba6, #8b5cf6, #3b82f6);
   }
 }
 
-body {
-  margin: 0;
-}
-
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
   }
-}
-p {
-  margin: 0;
-}
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+  .mask-fade-x {
+    mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+  }
 }

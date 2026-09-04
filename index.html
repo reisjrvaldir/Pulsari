@@ -1,16 +1,76 @@
 <!doctype html>
-<html lang="pt-BR" translate="no">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="apple-touch-icon" href="/favicon.png" />
+    <link rel="icon" type="image/png" href="/images/logo-mark.png?v=2" />
+    <link rel="apple-touch-icon" href="/images/logo-mark.png?v=2" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="google" content="notranslate" />
-    <meta http-equiv="Content-Language" content="pt-BR" />
-    <title>Pulsari — Comunicação, Sistemas & Consultoria</title>
+    <meta name="theme-color" content="#1D0B2B" />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="Pulsari" />
+
+    <title>Pulsari — Estratégia, Design e Tecnologia</title>
+    <meta
+      name="description"
+      content="A Pulsari cria sites, sistemas, identidades e experiências digitais que conectam marcas, pessoas e resultados."
+    />
+    <!-- ⚠️ Ajuste a URL abaixo assim que o domínio oficial da Pulsari estiver definido -->
+    <!-- <link rel="canonical" href="https://pulsari.com.br/" /> -->
+
+    <!-- Google Analytics 4 — ⚠️ substitua G-XXXXXXXXXX pelo ID real de medição
+         (analytics.google.com → Admin → Fluxos de dados) assim que a propriedade
+         existir. Sem um ID real, o script carrega mas não envia dados a lugar
+         nenhum — nada quebra, mas nada é rastreado até essa troca. -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag('js', new Date())
+      gtag('config', 'G-XXXXXXXXXX')
+    </script>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Pulsari" />
+    <meta property="og:title" content="Pulsari — Estratégia, Design e Tecnologia" />
+    <meta
+      property="og:description"
+      content="A Pulsari cria sites, sistemas, identidades e experiências digitais que conectam marcas, pessoas e resultados."
+    />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:image" content="/video/hero-poster.jpg" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Pulsari — Estratégia, Design e Tecnologia" />
+    <meta
+      name="twitter:description"
+      content="A Pulsari cria sites, sistemas, identidades e experiências digitais que conectam marcas, pessoas e resultados."
+    />
+    <meta name="twitter:image" content="/video/hero-poster.jpg" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        "name": "Pulsari",
+        "description": "Agência digital de estratégia, design e tecnologia.",
+        "areaServed": "BR",
+        "email": "ag.pulsari@gmail.com",
+        "telephone": "+5581989654487",
+        "sameAs": ["https://instagram.com/agenciapulsari"],
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Recife",
+          "addressRegion": "PE",
+          "addressCountry": "BR"
+        }
+      }
+    </script>
   </head>
-  <body>
+  <body class="bg-paper">
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

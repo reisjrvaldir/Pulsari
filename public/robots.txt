@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# ⚠️ Preencha com o domínio real assim que ele for definido (ver src/config/site.ts)
+# Sitemap: https://SEU-DOMINIO-AQUI/sitemap.xml

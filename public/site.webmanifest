@@ -1,0 +1,17 @@
+{
+  "name": "Pulsari — Estratégia, Design e Tecnologia",
+  "short_name": "Pulsari",
+  "description": "A Pulsari cria sites, sistemas, identidades e experiências digitais que conectam marcas, pessoas e resultados.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1D0B2B",
+  "theme_color": "#1D0B2B",
+  "icons": [
+    {
+      "src": "/images/logo-mark.png",
+      "sizes": "500x500",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
