@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Compass, Palette, LayoutTemplate, Boxes, Workflow, Clapperboard, Check, ChevronDown } from 'lucide-react'
+import { Compass, Palette, LayoutTemplate, Boxes, Workflow, Clapperboard, LifeBuoy, Megaphone, Check, ChevronDown } from 'lucide-react'
 import { Reveal } from './Reveal'
 
 const services = [
@@ -62,6 +62,30 @@ const services = [
       'Conexão entre ferramentas (CRM, planilhas, WhatsApp e outras)',
       'Fluxos automatizados que eliminam tarefas manuais',
       'Uso de IA para agilizar atendimento e produção de conteúdo',
+    ],
+  },
+  {
+    icon: LifeBuoy,
+    title: 'Sustentação e Suporte',
+    text: 'Manutenção e suporte contínuo para sites e sistemas — inclusive os que já foram desenvolvidos por outra equipe.',
+    span: 'lg:col-span-4',
+    accent: 'from-brand-pink to-brand-violet',
+    details: [
+      'Suporte para projetos da Pulsari ou desenvolvidos por terceiros',
+      'Correções, atualizações e melhorias no que já está no ar',
+      'Ponto de contato único pra dúvidas técnicas e ajustes pontuais',
+    ],
+  },
+  {
+    icon: Megaphone,
+    title: 'Gestão de Mídias Sociais',
+    text: 'Planejamento e produção de conteúdo para manter suas redes sociais ativas, consistentes e alinhadas com a marca.',
+    span: 'lg:col-span-4',
+    accent: 'from-brand-violet to-brand-blue',
+    details: [
+      'Calendário de postagens e linha editorial',
+      'Criação de artes e legendas para cada rede',
+      'Acompanhamento de métricas e engajamento',
     ],
   },
   {
