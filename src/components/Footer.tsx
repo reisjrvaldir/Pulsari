@@ -1,4 +1,4 @@
-import { Mail } from 'lucide-react'
+import { LifeBuoy, Mail } from 'lucide-react'
 import { SiInstagram, SiWhatsapp } from 'react-icons/si'
 import { Logo } from './Logo'
 import { site, mailHref, whatsappHref } from '../config/site'
@@ -45,6 +45,17 @@ export function Footer() {
                 {site.contact.email}
               </a>
             )}
+
+            {/* Entrada do sistema de chamados — outro deploy, outro domínio. */}
+            <a
+              href={site.deskUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-3 inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm hover:border-white/40 hover:bg-white/5 hover:text-white transition-colors"
+            >
+              <LifeBuoy size={14} />
+              Desk Pulsari
+            </a>
 
             <div className="flex items-center gap-3 mt-5">
               <a

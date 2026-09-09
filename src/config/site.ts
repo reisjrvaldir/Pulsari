@@ -8,6 +8,9 @@ export const site = {
   domain: '', // ex: 'pulsari.com.br' — usado no canonical e OG, preencher quando disponível
   location: 'Recife, PE · Brasil',
 
+  // Pulsari Desk — sistema de chamados, deploy separado deste site.
+  deskUrl: 'https://desk.pulsari.com.br',
+
   nav: [
     { label: 'Início', href: '#inicio' },
     { label: 'Sobre', href: '#sobre' },

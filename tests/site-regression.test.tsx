@@ -58,6 +58,19 @@ describe('site institucional continua intacto', () => {
     }
   })
 
+  it('o rodapé leva ao Desk, em nova aba e com rel seguro', () => {
+    const { container } = renderEm('/')
+    const link = container.querySelector<HTMLAnchorElement>('a[href*="desk.pulsari.com.br"]')
+
+    expect(link, 'link do Desk sumiu do rodapé').not.toBeNull()
+    expect(link!.textContent).toMatch(/Desk Pulsari/i)
+    expect(link!.getAttribute('href')).toBe('https://desk.pulsari.com.br')
+    // Sai do site: abre em aba nova, e `noreferrer` impede que a página de
+    // destino alcance esta via window.opener.
+    expect(link!.getAttribute('target')).toBe('_blank')
+    expect(link!.getAttribute('rel')).toContain('noreferrer')
+  })
+
   it('a home não renderiza nada do Operations', () => {
     renderEm('/')
     expect(screen.queryByText(/Pulsari Operations/i)).not.toBeInTheDocument()
