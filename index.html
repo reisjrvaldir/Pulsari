@@ -23,14 +23,10 @@
          existir. Sem um ID real, o script carrega mas não envia dados a lugar
          nenhum — nada quebra, mas nada é rastreado até essa troca. -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-    <script>
-      window.dataLayer = window.dataLayer || []
-      function gtag() {
-        dataLayer.push(arguments)
-      }
-      gtag('js', new Date())
-      gtag('config', 'G-XXXXXXXXXX')
-    </script>
+    <!-- O bootstrap fica em /analytics-init.js, e não inline, porque a CSP
+         define script-src 'self' sem 'unsafe-inline'. Ao trocar o ID de
+         medição, troque nos dois lugares. -->
+    <script src="/analytics-init.js"></script>
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Pulsari" />
