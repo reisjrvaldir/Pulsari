@@ -1,48 +1,34 @@
-import { Header } from './components/Header'
-import { Hero } from './components/Hero'
-import { ClientLogos } from './components/ClientLogos'
-import { Manifesto } from './components/Manifesto'
-import { Services } from './components/Services'
-import { Stack } from './components/Stack'
-import { Portfolio } from './components/Portfolio'
-import { Testimonials } from './components/Testimonials'
-import { MarqueeStrip } from './components/MarqueeStrip'
-import { TransitionBand } from './components/TransitionBand'
-import { Process } from './components/Process'
-import { About } from './components/About'
-import { Trust } from './components/Trust'
-import { Contact } from './components/Contact'
-import { Footer } from './components/Footer'
-import { WhatsAppFloat } from './components/WhatsAppFloat'
+import { Suspense, lazy } from 'react'
+import { Route, Routes } from 'react-router-dom'
+import { PublicSite } from './pages/PublicSite'
+
+// O Operations é carregado só quando alguém abre /admin. Sem isso, todo
+// visitante do site institucional baixaria o código do sistema interno junto.
+const AdminApp = lazy(() =>
+  import('./admin/AdminApp').then((m) => ({ default: m.AdminApp })),
+)
 
 function App() {
   return (
-    <>
-      <a
-        href="#inicio"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:bg-white focus:text-ink focus:px-4 focus:py-2 focus:rounded-full focus:shadow-soft"
-      >
-        Pular para o conteúdo
-      </a>
-      <Header />
-      <main>
-        <Hero />
-        <ClientLogos />
-        <Manifesto />
-        <Services />
-        <Stack />
-        <Portfolio />
-        <Testimonials />
-        <MarqueeStrip />
-        <TransitionBand />
-        <Process />
-        <About />
-        <Trust />
-        <Contact />
-      </main>
-      <Footer />
-      <WhatsAppFloat />
-    </>
+    <Routes>
+      <Route path="/" element={<PublicSite />} />
+      <Route
+        path="/admin/*"
+        element={
+          <Suspense
+            fallback={
+              <div className="min-h-screen grid place-items-center bg-paper">
+                <p className="text-ink-soft text-sm">Carregando…</p>
+              </div>
+            }
+          >
+            <AdminApp />
+          </Suspense>
+        }
+      />
+      {/* Qualquer outra URL cai no site institucional, como antes. */}
+      <Route path="*" element={<PublicSite />} />
+    </Routes>
   )
 }
 
