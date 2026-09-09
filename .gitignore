@@ -24,3 +24,12 @@ dist-ssr
 *.sw?
 
 .vercel
+
+# Variáveis de ambiente — NUNCA subir para o git
+.env
+.env.local
+.env.*.local
+.env.production
+
+# Dados locais do servidor antigo (mensagens de contato)
+server/data/
