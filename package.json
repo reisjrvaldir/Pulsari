@@ -7,28 +7,42 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "migrate": "node scripts/migrate.js",
+    "migrate:status": "node scripts/migrate.js --status",
+    "seed:admin": "node scripts/seed-admin.js"
   },
   "dependencies": {
     "@fontsource/instrument-serif": "^5.3.0",
     "@fontsource/montserrat": "^5.3.0",
     "@fontsource/raleway": "^5.3.0",
+    "@neondatabase/serverless": "^1.1.0",
     "framer-motion": "^13.1.1",
     "lucide-react": "^1.39.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-icons": "^5.7.0"
+    "react-icons": "^5.7.0",
+    "react-router-dom": "^7.18.3"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "@vitejs/plugin-react": "^6.1.0",
+    "@vitest/coverage-v8": "^5.0.0",
     "autoprefixer": "^10.5.4",
+    "jsdom": "^30.0.1",
     "oxlint": "^1.79.0",
     "postcss": "^8.5.26",
     "tailwindcss": "^3.4.19",
     "typescript": "~6.0.2",
-    "vite": "^8.2.2"
+    "vite": "^8.2.2",
+    "vitest": "^5.0.0"
   }
 }

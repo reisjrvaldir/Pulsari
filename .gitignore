@@ -33,3 +33,6 @@ dist-ssr
 
 # Dados locais do servidor antigo (mensagens de contato)
 server/data/
+
+# Backups locais
+*.zip
