@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { splitStatements } from '../scripts/split-sql.js'
 
@@ -79,10 +79,60 @@ describe('splitStatements', () => {
     expect(tabelas).toBe(5)
   })
 
-  it('todo comando da migration é idempotente', () => {
-    const sql = readFileSync('migrations/001_auth_foundation.sql', 'utf8')
-    for (const stmt of splitStatements(sql)) {
-      expect(stmt, 'sem IF NOT EXISTS: ' + stmt.slice(0, 50)).toMatch(/IF NOT EXISTS/)
+  it('toda migration é reexecutável sem erro', () => {
+    // O runner não abre transação envolvendo os comandos (o driver HTTP da
+    // Neon não permite), então uma falha no meio deixa a migration parcialmente
+    // aplicada. Reexecutar precisa ser seguro — daí a exigência.
+    //
+    // `ADD CONSTRAINT` e `CREATE TRIGGER` não aceitam IF NOT EXISTS; o padrão
+    // aceito é vir logo após o DROP ... IF EXISTS correspondente.
+    const migrations = readdirSync('migrations').filter((f) => f.endsWith('.sql')).sort()
+    expect(migrations.length).toBeGreaterThan(0)
+
+    for (const arquivo of migrations) {
+      const comandos = splitStatements(readFileSync(`migrations/${arquivo}`, 'utf8'))
+      expect(comandos.length, `${arquivo} não produziu comandos`).toBeGreaterThan(0)
+
+      comandos.forEach((stmt, i) => {
+        // O DROP correspondente precisa vir ANTES, mas não necessariamente
+        // colado: em 005 o DROP TRIGGER abre a migration e o CREATE TRIGGER
+        // a fecha, com a função e a limpeza no meio.
+        const anteriores = comandos.slice(0, i).join('\n')
+
+        const seguro =
+          /IF NOT EXISTS/i.test(stmt) ||
+          /IF EXISTS/i.test(stmt) ||
+          /OR REPLACE/i.test(stmt) ||
+          /ON CONFLICT/i.test(stmt) ||
+          (/^ALTER TABLE .* ADD CONSTRAINT/is.test(stmt) &&
+            /DROP CONSTRAINT IF EXISTS/i.test(anteriores)) ||
+          (/^CREATE TRIGGER/is.test(stmt) &&
+            /DROP TRIGGER IF EXISTS/i.test(anteriores)) ||
+          // DELETE com WHERE é no-op na segunda execução: o que casava já
+          // sumiu. Sem WHERE seria apagar a tabela inteira toda vez — por
+          // isso a exigência do filtro.
+          /^DELETE\s+FROM\s+\S+\s+WHERE\s+/is.test(stmt) ||
+          // Remover um default já removido também é no-op.
+          /^ALTER\s+TABLE\s+.*DROP\s+DEFAULT/is.test(stmt)
+
+        expect(
+          seguro,
+          `${arquivo}, comando ${i + 1} não é reexecutável: ${stmt.replace(/\s+/g, ' ').slice(0, 70)}`,
+        ).toBe(true)
+      })
+    }
+  })
+
+  it('nenhum comando carrega outro junto, fora de bloco $$', () => {
+    const migrations = readdirSync('migrations').filter((f) => f.endsWith('.sql'))
+    for (const arquivo of migrations) {
+      for (const stmt of splitStatements(readFileSync(`migrations/${arquivo}`, 'utf8'))) {
+        // Ponto e vírgula só é aceitável dentro de corpo de função.
+        const dentroDeBloco = stmt.includes('$$')
+        if (!dentroDeBloco) {
+          expect(stmt, `${arquivo}: ${stmt.slice(0, 50)}`).not.toMatch(/;/)
+        }
+      }
     }
   })
 })
