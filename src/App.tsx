@@ -8,6 +8,19 @@ const AdminApp = lazy(() =>
   import('./admin/AdminApp').then((m) => ({ default: m.AdminApp })),
 )
 
+// A proposta também sai do pacote principal: só quem recebe um link abre.
+const ProposalPage = lazy(() =>
+  import('./pages/ProposalPage').then((m) => ({ default: m.ProposalPage })),
+)
+
+function Carregando() {
+  return (
+    <div className="min-h-screen grid place-items-center bg-paper">
+      <p className="text-ink-soft text-sm">Carregando…</p>
+    </div>
+  )
+}
+
 function App() {
   return (
     <Routes>
@@ -15,14 +28,16 @@ function App() {
       <Route
         path="/admin/*"
         element={
-          <Suspense
-            fallback={
-              <div className="min-h-screen grid place-items-center bg-paper">
-                <p className="text-ink-soft text-sm">Carregando…</p>
-              </div>
-            }
-          >
+          <Suspense fallback={<Carregando />}>
             <AdminApp />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/proposta/:token"
+        element={
+          <Suspense fallback={<Carregando />}>
+            <ProposalPage />
           </Suspense>
         }
       />
