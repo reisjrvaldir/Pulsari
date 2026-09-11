@@ -1,8 +1,11 @@
 import { Route, Routes } from 'react-router-dom'
 import { SessionProvider } from './SessionProvider'
 import { ProtectedRoute } from './ProtectedRoute'
+import { AdminLayout } from './AdminLayout'
 import { LoginPage } from './LoginPage'
 import { AdminHome } from './AdminHome'
+import { ProposalsList } from './proposals/ProposalsList'
+import { ProposalEditor } from './proposals/ProposalEditor'
 
 /**
  * Raiz do Pulsari Operations, montado em /admin/*.
@@ -14,22 +17,43 @@ export function AdminApp() {
     <SessionProvider>
       <Routes>
         <Route path="login" element={<LoginPage />} />
+
         <Route
-          index
           element={
             <ProtectedRoute>
-              <AdminHome />
+              <AdminLayout />
             </ProtectedRoute>
           }
-        />
-        <Route
-          path="*"
-          element={
-            <ProtectedRoute>
-              <AdminHome />
-            </ProtectedRoute>
-          }
-        />
+        >
+          <Route index element={<AdminHome />} />
+          {/* `roles` aqui é conveniência de navegação; a autorização real
+              acontece em requireRole, rota por rota, no servidor. */}
+          <Route
+            path="proposals"
+            element={
+              <ProtectedRoute roles={['admin', 'manager', 'commercial']}>
+                <ProposalsList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="proposals/new"
+            element={
+              <ProtectedRoute roles={['admin', 'manager', 'commercial']}>
+                <ProposalEditor />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="proposals/:id"
+            element={
+              <ProtectedRoute roles={['admin', 'manager', 'commercial']}>
+                <ProposalEditor />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<AdminHome />} />
+        </Route>
       </Routes>
     </SessionProvider>
   )
