@@ -4,6 +4,7 @@ import { can } from './permissions'
 import type { Resource } from './permissions'
 
 const MODULOS: { resource: Resource; label: string; descricao: string; para?: string }[] = [
+  { resource: 'leads', label: 'Prospecção', descricao: 'Quem buscamos ativamente', para: '/admin/prospects' },
   { resource: 'crm', label: 'CRM', descricao: 'Leads e relacionamento', para: '/admin/crm' },
   { resource: 'clients', label: 'Clientes', descricao: 'Cadastro e histórico' },
   { resource: 'projects', label: 'Projetos', descricao: 'Sprints e entregas' },

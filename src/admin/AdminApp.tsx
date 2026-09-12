@@ -7,6 +7,7 @@ import { AdminHome } from './AdminHome'
 import { ProposalsList } from './proposals/ProposalsList'
 import { ProposalEditor } from './proposals/ProposalEditor'
 import { CrmBoard } from './crm/CrmBoard'
+import { ProspectsList } from './prospects/ProspectsList'
 
 /**
  * Raiz do Pulsari Operations, montado em /admin/*.
@@ -37,6 +38,14 @@ export function AdminApp() {
           />
           {/* `roles` aqui é conveniência de navegação; a autorização real
               acontece em requireRole, rota por rota, no servidor. */}
+          <Route
+            path="prospects"
+            element={
+              <ProtectedRoute roles={['admin', 'manager', 'commercial']}>
+                <ProspectsList />
+              </ProtectedRoute>
+            }
+            />
           <Route
             path="proposals"
             element={

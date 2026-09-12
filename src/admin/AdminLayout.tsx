@@ -13,6 +13,7 @@ import type { Resource } from './permissions'
  */
 const NAVEGACAO: { para: string; rotulo: string; recurso: Resource }[] = [
   { para: '/admin', rotulo: 'Início', recurso: 'crm' },
+  { para: '/admin/prospects', rotulo: 'Prospecção', recurso: 'leads' },
   { para: '/admin/crm', rotulo: 'CRM', recurso: 'crm' },
   { para: '/admin/proposals', rotulo: 'Propostas', recurso: 'proposals' },
 ]
