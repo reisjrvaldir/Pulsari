@@ -112,6 +112,9 @@ describe('splitStatements', () => {
           // sumiu. Sem WHERE seria apagar a tabela inteira toda vez — por
           // isso a exigência do filtro.
           /^DELETE\s+FROM\s+\S+\s+WHERE\s+/is.test(stmt) ||
+          // UPDATE com WHERE que corrige uma invariante: na segunda execução
+          // não casa linha nenhuma. Sem WHERE reescreveria a tabela inteira.
+          /^UPDATE\s+[\s\S]*\bWHERE\b/is.test(stmt) ||
           // Remover um default já removido também é no-op.
           /^ALTER\s+TABLE\s+.*DROP\s+DEFAULT/is.test(stmt)
 
