@@ -46,9 +46,13 @@ describe('colunas monetárias', () => {
         if (!m) continue
         const [, coluna, tipo] = m
         if (!PALAVRAS_MONETARIAS.test(coluna)) continue
-        // `estimated_value`, `amount`, `value` — mas não `to_value`/`from_value`,
-        // que são histórico textual, nem `billing_day`.
+
+        // Nem tudo que casa com a palavra é dinheiro:
+        //  - from_value / to_value: histórico textual de mudança de campo
+        //  - total_linhas e afins: contagem, não valor
+        //  - *_dias / *_horas / *_meses: duração
         if (/^(from|to)_value$/.test(coluna)) continue
+        if (/_(linhas|count|qtd|dias|horas|meses)$/.test(coluna)) continue
         if (!/^numeric\s*\(\s*\d+\s*,\s*2\s*\)$/i.test(tipo.trim())) {
           problemas.push(`${arquivo}: ${coluna} é ${tipo.trim()}`)
         }
