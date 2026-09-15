@@ -163,6 +163,26 @@ export const projects = [
     ],
     stack: ['HTML', 'CSS', 'JavaScript'],
   },
+  {
+    number: '09',
+    name: 'Prospect',
+    url: '',
+    video: '/video/prospect.mp4',
+    cropTop: 14,
+    cropBottom: 6,
+    gradient: 'from-[#071811] via-[#0F2A1E] to-[#22C55E]',
+    category: 'SaaS · Prospecção de Leads',
+    filterKey: 'sistema',
+    description:
+      'Sistema de geração e qualificação de leads para times comerciais. O Prospect busca e consulta leads com filtros a partir de integrações como Apify e Google Places, traz os dados prontos com score e insights de IA, e também gera propostas e contratos — tudo focado em prospecção e qualificação.',
+    services: [
+      'Busca e consulta de leads com filtros por nicho e localização',
+      'Score e insights automáticos com IA para cada lead',
+      'Geração de propostas e contratos',
+      'Kanban, exportação e automação do funil de prospecção',
+    ],
+    stack: ['Next.js', 'Node.js', 'TypeScript', 'Apify'],
+  },
 ]
 
 type Project = (typeof projects)[number]
