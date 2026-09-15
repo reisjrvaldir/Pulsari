@@ -123,6 +123,46 @@ export const projects = [
     testimonial:
       'A gente precisava apresentar o GestEscolar de uma forma mais clara e profissional. A Pulsari entendeu a proposta, organizou bem as informações e trouxe sugestões que fizeram muita diferença no resultado.',
   },
+  {
+    number: '07',
+    name: 'Pulsari Desk',
+    url: 'https://desk.pulsari.com.br',
+    video: '/video/pulsaridesk.mp4',
+    cropTop: 13,
+    cropBottom: 6,
+    gradient: 'from-[#071426] via-[#0F2647] to-[#2563EB]',
+    category: 'SaaS · Portal de Suporte',
+    filterKey: 'sistema',
+    description:
+      'Portal de suporte desenvolvido pela própria Pulsari para os clientes acompanharem o atendimento: abertura e acompanhamento de chamados com SLA, banco de horas do contrato, base de conhecimento e gestão da empresa e equipe, tudo em modo claro ou escuro.',
+    services: [
+      'Abertura e acompanhamento de chamados com SLA',
+      'Banco de horas e extrato de consumo por contrato',
+      'Base de conhecimento com busca e categorias',
+      'Modo claro e escuro',
+    ],
+    stack: ['Next.js', 'Node.js', 'TypeScript', 'PostgreSQL'],
+  },
+  {
+    number: '08',
+    name: 'Rota Direta Transportes',
+    url: 'https://rotadiretatransportes.com.br/',
+    video: '/video/rotadireta.mp4',
+    cropTop: 14,
+    cropBottom: 6,
+    gradient: 'from-[#1D0B2B] via-[#3A1414] to-[#DC2626]',
+    category: 'Transporte e Logística · Site Institucional',
+    filterKey: 'institucional',
+    description:
+      'Posto de atendimento credenciado pela ANTT, especializado em regularização de RNTRC para transportadores. A Pulsari desenvolveu o site institucional completo, com apresentação dos serviços, o passo a passo do atendimento e prova social com avaliações reais de clientes.',
+    services: [
+      'Desenvolvimento do site institucional completo',
+      "Página 'Como funciona' com o passo a passo do atendimento",
+      'Integração com avaliações do Google',
+      'Botão direto de atendimento via WhatsApp',
+    ],
+    stack: ['HTML', 'CSS', 'JavaScript'],
+  },
 ]
 
 type Project = (typeof projects)[number]

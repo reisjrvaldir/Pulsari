@@ -1,4 +1,4 @@
-import { Mail } from 'lucide-react'
+import { LifeBuoy, Mail } from 'lucide-react'
 import { SiInstagram, SiWhatsapp } from 'react-icons/si'
 import { Logo } from './Logo'
 import { site, mailHref, whatsappHref } from '../config/site'
@@ -36,17 +36,16 @@ export function Footer() {
             <h3 className="text-xs font-semibold tracking-[0.16em] uppercase text-white/40 mb-5">Contato</h3>
             <p className="text-sm">{site.location}</p>
 
-            {hasEmail && (
-              <a
-                href={mailHref()}
-                className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm hover:border-white/40 hover:bg-white/5 hover:text-white transition-colors"
-              >
-                <Mail size={14} />
-                {site.contact.email}
-              </a>
-            )}
-
             <div className="flex items-center gap-3 mt-5">
+              {hasEmail && (
+                <a
+                  href={mailHref()}
+                  aria-label={`Enviar e-mail para a Pulsari: ${site.contact.email}`}
+                  className="h-10 w-10 rounded-full border border-white/15 flex items-center justify-center hover:border-white/40 hover:text-white hover:bg-white/5 transition-colors"
+                >
+                  <Mail size={16} />
+                </a>
+              )}
               <a
                 href={whatsappHref()}
                 target="_blank"
@@ -64,6 +63,15 @@ export function Footer() {
                 className="h-10 w-10 rounded-full border border-white/15 flex items-center justify-center hover:border-white/40 hover:text-white hover:bg-white/5 transition-colors"
               >
                 <SiInstagram size={16} />
+              </a>
+              <a
+                href="https://desk.pulsari.com.br"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Acessar o Pulsari Desk, o portal de suporte para clientes"
+                className="h-10 w-10 rounded-full border border-white/15 flex items-center justify-center hover:border-white/40 hover:text-white hover:bg-white/5 transition-colors"
+              >
+                <LifeBuoy size={16} />
               </a>
             </div>
           </div>
