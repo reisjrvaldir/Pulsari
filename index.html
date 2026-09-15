@@ -31,17 +31,11 @@
     <!-- Meta Pixel (Facebook/Instagram Ads) — ⚠️ substitua SEU_PIXEL_ID em
          /meta-pixel-init.js pelo ID real assim que o pixel existir. O
          bootstrap também fica em arquivo externo pelo mesmo motivo do
-         analytics acima (CSP sem 'unsafe-inline'). -->
+         analytics acima (CSP sem 'unsafe-inline'). O <noscript><img> de
+         fallback fica no body, não aqui: <noscript> em <head> só aceita
+         <link>/<style>/<meta> por spec — um <img> ali é HTML inválido e
+         quebra o build (parse5 do Vite rejeita). -->
     <script src="/meta-pixel-init.js"></script>
-    <noscript>
-      <img
-        height="1"
-        width="1"
-        style="display: none"
-        src="https://www.facebook.com/tr?id=SEU_PIXEL_ID&ev=PageView&noscript=1"
-        alt=""
-      />
-    </noscript>
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Pulsari" />
@@ -81,6 +75,15 @@
     </script>
   </head>
   <body class="bg-paper">
+    <noscript>
+      <img
+        height="1"
+        width="1"
+        style="display: none"
+        src="https://www.facebook.com/tr?id=SEU_PIXEL_ID&ev=PageView&noscript=1"
+        alt=""
+      />
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
