@@ -6,7 +6,7 @@ const logos = [
   { name: 'Alpha LED', src: '/images/logo-alpha-led.png' },
   { name: 'Gestescolar', src: '/images/logo-gestescolar.png' },
   { name: 'Pulsari Desk', src: '/images/logo-pulsari-desk.png', alwaysGray: true },
-  { name: 'Rota Direta Transportes', src: '/images/logo-rota-direta.png' },
+  { name: 'Rota Direta Transportes', src: '/images/logo-rota-direta.png?v=2' },
 ]
 
 export function ClientLogos() {
