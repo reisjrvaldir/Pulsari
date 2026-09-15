@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { motion, useScroll, useSpring, useMotionValueEvent } from 'framer-motion'
-import { Search, Target, Sparkles, Code2, TrendingUp } from 'lucide-react'
+import { Users, FileSearch, Presentation, FileSignature, ListChecks, Rocket } from 'lucide-react'
 import { Reveal } from './Reveal'
 import { HighlightText } from './HighlightText'
 import { usePrefersReducedMotion } from '../lib/hooks'
@@ -8,33 +8,39 @@ import { usePrefersReducedMotion } from '../lib/hooks'
 const steps = [
   {
     number: '01',
-    title: 'Descobrir',
-    icon: Search,
-    text: 'Entendemos o negócio, o público, os desafios e as oportunidades.',
+    title: 'Alinhamento',
+    icon: Users,
+    text: 'Reunião para entender a demanda, o contexto e os objetivos do projeto.',
   },
   {
     number: '02',
-    title: 'Definir',
-    icon: Target,
-    text: 'Transformamos informações em estratégia, escopo e prioridades.',
+    title: 'Proposta',
+    icon: FileSearch,
+    text: 'Analisamos as informações recebidas e elaboramos uma proposta sob medida.',
   },
   {
     number: '03',
-    title: 'Criar',
-    icon: Sparkles,
-    text: 'Desenvolvemos conceitos, interfaces e protótipos alinhados à direção definida.',
+    title: 'Apresentação',
+    icon: Presentation,
+    text: 'Apresentamos a proposta, tiramos dúvidas e alinhamos expectativas com você.',
   },
   {
     number: '04',
-    title: 'Desenvolver',
-    icon: Code2,
-    text: 'Construímos a solução com qualidade, performance, segurança e atenção aos detalhes.',
+    title: 'Contrato',
+    icon: FileSignature,
+    text: 'Formalizamos a parceria com um contrato claro sobre escopo e prazos.',
   },
   {
     number: '05',
-    title: 'Evoluir',
-    icon: TrendingUp,
-    text: 'Testamos, publicamos, acompanhamos e identificamos oportunidades de melhoria.',
+    title: 'Refinamento',
+    icon: ListChecks,
+    text: 'Detalhamos o escopo final e organizamos o plano de execução.',
+  },
+  {
+    number: '06',
+    title: 'Desenvolvimento',
+    icon: Rocket,
+    text: 'Damos início ao projeto e colocamos a mão na massa.',
   },
 ]
 
@@ -81,7 +87,7 @@ export function Process() {
               }}
               aria-hidden="true"
             />
-            <div className="grid grid-cols-5 gap-6">
+            <div className="grid grid-cols-6 gap-4 xl:gap-6">
               {steps.map((step, i) => {
                 const Icon = step.icon
                 const isActive = i <= activeStep

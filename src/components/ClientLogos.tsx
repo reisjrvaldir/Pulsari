@@ -5,6 +5,8 @@ const logos = [
   { name: 'ONG Star', src: '/images/logo-ong-star.png' },
   { name: 'Alpha LED', src: '/images/logo-alpha-led.png' },
   { name: 'Gestescolar', src: '/images/logo-gestescolar.png' },
+  { name: 'Pulsari Desk', src: '/images/logo-pulsari-desk.png', alwaysGray: true },
+  { name: 'Rota Direta Transportes', src: '/images/logo-rota-direta.png?v=2' },
 ]
 
 export function ClientLogos() {
@@ -18,7 +20,9 @@ export function ClientLogos() {
             key={`${logo.name}-${i}`}
             src={logo.src}
             alt=""
-            className="h-8 sm:h-10 w-auto object-contain grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-300"
+            className={`h-8 sm:h-10 w-auto object-contain grayscale opacity-60 transition-all duration-300 ${
+              logo.alwaysGray ? 'hover:opacity-80' : 'hover:opacity-100 hover:grayscale-0'
+            }`}
           />
         ))}
       </div>

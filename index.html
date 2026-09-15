@@ -28,6 +28,21 @@
          medição, troque nos dois lugares. -->
     <script src="/analytics-init.js"></script>
 
+    <!-- Meta Pixel (Facebook/Instagram Ads) — ⚠️ substitua SEU_PIXEL_ID em
+         /meta-pixel-init.js pelo ID real assim que o pixel existir. O
+         bootstrap também fica em arquivo externo pelo mesmo motivo do
+         analytics acima (CSP sem 'unsafe-inline'). -->
+    <script src="/meta-pixel-init.js"></script>
+    <noscript>
+      <img
+        height="1"
+        width="1"
+        style="display: none"
+        src="https://www.facebook.com/tr?id=SEU_PIXEL_ID&ev=PageView&noscript=1"
+        alt=""
+      />
+    </noscript>
+
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Pulsari" />
     <meta property="og:title" content="Pulsari — Estratégia, Design e Tecnologia" />
